@@ -1,5 +1,5 @@
-import BubbleList from "./BubbleList";
-import ChatForm from "./ChatForm";
+import BubbleList from "../messages/BubbleList";
+import ChatForm from "../messages/ChatForm";
 
 export default function ChatScreen() {
   return (

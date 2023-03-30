@@ -1,8 +1,8 @@
 import { useContext, useState } from 'react';
-import { ScreenContext } from '../App';
-import { login, register } from '../lib/api';
-import Card from './Card';
-import Input from './Input';
+import { ScreenContext } from '../../App';
+import { login, register } from '../../lib/api';
+import Card from '../Card';
+import Input from '../Input';
 
 const registerContent = {
   linkUrl: '/signin',

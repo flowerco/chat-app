@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { BsChatLeftTextFill } from 'react-icons/bs';
 import { MdSettings, MdLogout } from 'react-icons/md';
 import { FaUserFriends } from 'react-icons/fa';
-import { ScreenContext } from '../App';
+import { ScreenContext } from '../../App';
 
 export default function Sidenav() {
   const { screenState, setScreenState } = useContext(ScreenContext);

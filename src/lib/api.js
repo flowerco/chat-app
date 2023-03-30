@@ -39,3 +39,29 @@ export const login = async (user) => {
     console.log(error);
   }
 };
+
+export const search = async (searchString) => {
+  try {
+    const fetchedUsers = await fetcher({
+      url: 'http://localhost:3002/api/fetchUsers',
+      method: 'POST', 
+      body: { searchString }
+    });
+    return fetchedUsers
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const addContact = ( user ) => {
+  try {
+    const addedContact = fetcher({
+      url: 'http://localhost:3002/api/addContact',
+      method: 'POST', 
+      body: user
+    })
+  } catch (error) {
+    console.log(error);
+  }
+}
+

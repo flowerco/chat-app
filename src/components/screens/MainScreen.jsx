@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { ScreenContext } from "../../App";
-import ChatScreen from "../ChatScreen";
+import ChatScreen from "./ChatScreen";
 import Modal from "../Modal";
-import Sidebar from "../Sidebar";
-import Sidenav from "../Sidenav";
+import Sidebar from "../navs/Sidebar";
+import Sidenav from "../navs/Sidenav";
 
 export default function MainScreen() {
 
