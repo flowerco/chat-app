@@ -1,7 +1,9 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ScreenContext } from '../../App';
 import { BsPlusCircle } from 'react-icons/bs';
 import SearchBar from '../SearchBar';
+import { addContact, fetchContacts } from '../../lib/api';
+import UserList from '../UserList';
 
 const sidebarTypes = {
   NONE: {
@@ -31,18 +33,29 @@ export default function Sidebar({ number }) {
   const typeName = screenState.sidebarType[number - 1];
   const type = sidebarTypes[typeName];
 
+  const [contacts, setContacts] = useState([]);
+
   useEffect(() => {
-    // TODO: Either add an API call to fetch the contact list or have the list saved when logging in...
-    // Probably the first, the second seems daft...
-    console.log('Fetch chat or contact list here')
-  }, [])
+    // The list of contacts should be provided by the context, but will it rerender automatically?
+    console.log('Contacts loaded/updated');
+    // Using the list of contacts, we need to fetch the full data so they can be displayed
+    const fetchData = async () => {
+      return await fetchContacts(screenState.currentUser._id);
+    }
+    fetchData()
+    .then((data) => {
+      console.log(`Contact data received: ${data}`);
+      setContacts(data);
+    })
+    
+  }, [screenState.currentUser])
 
   const handleAddClick = (event) => {
     setScreenState({
       ...screenState,
       modalState: true,
-      sidebarState: 0,
-      activeSidebar: 'NONE',
+      // sidebarState: 0,
+      // activeSidebar: 'NONE',
     });
   };
 
@@ -66,7 +79,10 @@ export default function Sidebar({ number }) {
           searchCallback={handleSearch}
         />
       )}
-      {`${type.text}`}
+      { contacts.length > 0
+        ? <UserList users={contacts} />
+        : `No ${type} here yet, let's add some!`
+      }
     </div>
   );
 }

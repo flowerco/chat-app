@@ -7,7 +7,9 @@ export default function ChatForm() {
     setFormState(event.target.value);
   };
 
-  const handleSubmit = (event) => {};
+  const handleSubmit = (event) => {
+    event.preventDefault();
+  };
 
   return (
     <form

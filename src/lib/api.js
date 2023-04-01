@@ -40,12 +40,12 @@ export const login = async (user) => {
   }
 };
 
-export const search = async (searchString) => {
+export const search = async (contactsArray, searchString) => {
   try {
     const fetchedUsers = await fetcher({
-      url: 'http://localhost:3002/api/fetchUsers',
+      url: 'http://localhost:3002/api/searchUsers',
       method: 'POST', 
-      body: { searchString }
+      body: { contactsArray, searchString }
     });
     return fetchedUsers
   } catch (error) {
@@ -53,13 +53,27 @@ export const search = async (searchString) => {
   }
 }
 
-export const addContact = ( user ) => {
+export const addContact = async ( currentUserId, newContactId ) => {
   try {
-    const addedContact = fetcher({
+    const addedContact = await fetcher({
       url: 'http://localhost:3002/api/addContact',
-      method: 'POST', 
-      body: user
+      method: 'POST',
+      body: { currentUserId, newContactId }
     })
+    return addedContact;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const fetchContacts = async (userId) => {
+  try {
+    const contactList = await fetcher({
+      url: 'http://localhost:3002/api/fetchContacts',
+      method: 'POST',
+      body: { userId }
+    });
+    return contactList;
   } catch (error) {
     console.log(error);
   }

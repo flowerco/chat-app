@@ -8,6 +8,7 @@ export const ScreenContext = createContext();
 function App() {
   const [screenState, setScreenState] = useState({
     isAuthenticated: false,
+    currentUser: {},
     modalState: false,
     sidebarState: 0,
     activeSidebar: 'NONE',

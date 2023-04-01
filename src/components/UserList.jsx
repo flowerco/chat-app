@@ -1,4 +1,8 @@
-import { BsPlusCircle } from 'react-icons/bs';
+import { useContext } from 'react';
+import { BsChatLeftDots } from 'react-icons/bs';
+import { ScreenContext } from '../App';
+import { addContact } from '../lib/api';
+import BlankProfile from '../assets/blank-profile.png';
 
 const userListDev = [
   { _id: 1001, firstName: 'Brian', lastName: 'Smith', img: 'https://res.cloudinary.com/doeffypwo/image/upload/v1664008834/freechat/bki1ed0kngh7dj6vd464.jpg' },
@@ -13,30 +17,36 @@ const userListDev = [
 
 export default function UserList({ users }) {
 
-  // When the button on a user is clicked, we want to add that user's id to the list of contacts on the logged
-  // in user's document in the db.
-  // const handleClick = async (event) => {
-  //   const data = await addContact(event.target.user);
-  // }
+  const {screenState, setScreenState} = useContext(ScreenContext);
+
+  const handleClick = (event) => {
+    // Use the addContact API to add the contact to the current user.
+    console.log(event);
+    // Close the modal
+  }
 
   return (
-    <ul className='w-full h-52 overflow-scroll flex flex-col justify-start items-center px-6 gap-2'>
-      {userListDev.map((user) => {
-        return <UserItem key={user._id} user={user} />;
+    <ul className='w-full h-[calc(100%-275px)] overflow-scroll flex flex-col justify-start items-center px-6 gap-2'>
+      {users.map((user) => {
+        return <UserItem key={user._id} user={user} callback={handleClick}/>;
       })}
     </ul>
   );
 }
 
-const UserItem = ({ user }) => {
+const UserItem = ({ user, type, callback }) => {
+
+  // The userItem can either be type searchedUser, which has a '+' button to add to contacts list, or
+  // type contact, which has a 'chat' button to start/resume a chat.
+
   return (
     <li className='w-full h-12 flex justify-between items-center bg-grey-200 '>
-      <img className='h-full aspect-square object-cover rounded-full' src={user.img} alt={`User ${user.firstName}`} />
+      <img className='h-full aspect-square object-cover rounded-full' src={user.img || BlankProfile} alt={`User ${user.firstName}`} />
       <h2 className='h-full w-full ml-4 flex items-center text-xl border-b border-gray-400'>
         {user.firstName} {user.lastName}
       </h2>
-      <button onClick={() => {}} className='text-black border-b border-gray-400 h-full'>
-        <BsPlusCircle size='32' />
+      <button onClick={() => {console.log('Hi, thanks for clicking!')}} className='text-black border-b border-gray-400 h-full'>
+        <BsChatLeftDots size='24' />
       </button>
     </li>
   );

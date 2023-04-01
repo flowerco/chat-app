@@ -48,7 +48,8 @@ export default function AuthForm() {
         if (data) {
           setScreenState({
             ...screenState,
-            isAuthenticated: true
+            isAuthenticated: true,
+            currentUser: data
           })
         }
       }
