@@ -66,6 +66,19 @@ export const addContact = async ( currentUserId, newContactId ) => {
   }
 }
 
+export const deleteContact = async ( currentUserId, contactId ) => {
+  try {
+    const updatedUser = await fetcher({
+      url: 'http://localhost:3002/api/deleteContact',
+      method: 'POST',
+      body: { currentUserId, contactId }
+    })
+    return updatedUser;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export const fetchContacts = async (userId) => {
   try {
     const contactList = await fetcher({

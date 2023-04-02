@@ -12,10 +12,12 @@ export default function ChatForm({ callback }) {
       className='fixed bottom-0 left-0 w-full h-14 bg-purple-600
       flex justify-center items-center pl-28 pr-12'
       onSubmit={(event) => {
+        event.preventDefault();
+        if (event.target.message.value !== '') {
           callback(event);
           setFormState('');
         }
-      }
+      }}
     >
       <input
         className='h-8 w-3/4 rounded-l-md pl-6'
@@ -25,7 +27,12 @@ export default function ChatForm({ callback }) {
         onChange={handleChange}
         placeholder='Enter Message Here...'
       />
-      <button type='submit' className='bg-blue-500 h-8 w-1/4 max-w-[10rem] rounded-r-md font-bold text-white'>Send</button>
+      <button
+        type='submit'
+        className='bg-blue-500 h-8 w-1/4 max-w-[10rem] rounded-r-md font-bold text-white'
+      >
+        Send
+      </button>
     </form>
   );
 }

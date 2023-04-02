@@ -1,8 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -11,10 +9,17 @@ module.exports = {
         gray: {
           900: '#202225',
           800: '#2f3136',
-          700: '#36393f'
-        }
-      }
+          700: '#36393f',
+        },
+      },
+      maxWidth: {
+        '1/4': '25%',
+        '1/2': '50%',
+        '2/3': '66%',
+        '3/4': '75%',
+        '5/6': '83%'
+      },
     },
   },
   plugins: [],
-}
+};

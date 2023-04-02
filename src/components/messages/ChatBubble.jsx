@@ -7,12 +7,18 @@ export default function ChatBubble({ chatItem }) {
 
   const userId = screenState.currentUser._id;
 
+  const isOnlyEmoji = (testString) => {
+    return /^\p{Extended_Pictographic}+$/u.test(testString);
+  } 
+
+  const textSize = isOnlyEmoji(chatItem.text) ? 'text-6xl' : 'text-md';
+
   return (
-    <div className={`w-3/4 border border-slate-500 rounded-md px-4 py-2
-    ${userId === chatItem.id ? 'bg-fuchsia-600 self-end' : 'bg-yellow-600'}`}>
+    <div className={`max-w-5/6 border border-slate-500 rounded-md px-4 py-2
+    ${userId === chatItem.id ? 'bg-fuchsia-600 self-end text-white' : 'bg-yellow-600 self-start'}`}>
       <div className="flex flex-col">
-        <p className="text-md">{chatItem.text}</p>
-        <p className="text-xs">{chatItem.timeStamp.toLocaleString()}</p>
+        <p className={textSize}>{chatItem.text}</p>
+        <p className="text-xs mt-1">{chatItem.timeStamp.toLocaleString()}</p>
       </div> 
   </div>
   )

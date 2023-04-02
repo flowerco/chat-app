@@ -17,7 +17,7 @@ export default function MainScreen() {
         {/* Two sidebars for a nice switching animation as one slides in and one slides out. */}
         <Sidebar number={1} />
         <Sidebar number={2} />
-        <ChatScreen contactId={"6420a39af84077a288f95dc1"}/>
+        <ChatScreen chat={screenState.currentChat}/>
       </div>
     </div>
   );
