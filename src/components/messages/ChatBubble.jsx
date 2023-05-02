@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { ScreenContext } from "../../App"
 
 export default function ChatBubble({ chatItem }) {
@@ -12,6 +12,11 @@ export default function ChatBubble({ chatItem }) {
   } 
 
   const textSize = isOnlyEmoji(chatItem.text) ? 'text-6xl' : 'text-md';
+
+  // useEffect(() => {
+  //   console.log('Rendering chat item for user: ', chatItem.id);
+  //   console.log('Current logged in user: ', userId);
+  // }, [chatItem, userId])
 
   return (
     <div className={`max-w-5/6 border border-slate-500 rounded-md px-4 py-2

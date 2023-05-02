@@ -1,7 +1,11 @@
 export const fetcher = async ({ url, method, body, json = true }) => {
+
+  const cookieFlag = !['/register','/login'].includes(url);
+
   const res = await fetch(url, {
     method,
     body: JSON.stringify(body),
+    credentials: cookieFlag ? "include" : "omit",
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -21,16 +25,31 @@ export const fetcher = async ({ url, method, body, json = true }) => {
 
 export const register = (user) => {
   return fetcher({
-    url: 'http://localhost:3002/api/register',
+    url: 'http://localhost:3002/register',
     method: 'POST',
     body: user,
   });
 };
 
+export const verifyLogin = async () => {
+  try {
+    const verifiedUser = await fetcher({
+      url: 'http://localhost:3002/verifyLogin',
+      method: 'GET'
+    })
+    return verifiedUser
+  } catch (error) {
+    console.clear();
+    console.log('Please Authenticate');
+    // Return a failed login status
+    return null
+  }
+}
+
 export const login = async (user) => {
   try {
     const fetchedData = await fetcher({
-      url: 'http://localhost:3002/api/login',
+      url: 'http://localhost:3002/login',
       method: 'POST',
       body: { email: user.email, password: user.password },
     });
@@ -39,6 +58,13 @@ export const login = async (user) => {
     console.log(error);
   }
 };
+
+export const logout = () => {
+  fetcher({
+    url: 'http://localhost:3002/logout',
+    method: 'GET'
+  })
+}
 
 export const search = async (contactsArray, searchString) => {
   try {
@@ -87,6 +113,45 @@ export const fetchContacts = async (userId) => {
       body: { userId }
     });
     return contactList;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const fetchChats = async (userId) => {
+  try {
+    const contactList = await fetcher({
+      url: 'http://localhost:3002/api/fetchChats',
+      method: 'POST',
+      body: { userId }
+    });
+    return contactList;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const addChat = async ( currentUserId, contactId ) => {
+  try {
+    const addedChat = await fetcher({
+      url: 'http://localhost:3002/api/addChat',
+      method: 'POST',
+      body: { currentUserId, contactId }
+    })
+    return addedChat;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const deleteChat = async ( currentUserId, chatId ) => {
+  try {
+    const updatedUser = await fetcher({
+      url: 'http://localhost:3002/api/deleteChat',
+      method: 'POST',
+      body: { currentUserId, chatId }
+    })
+    return updatedUser;
   } catch (error) {
     console.log(error);
   }

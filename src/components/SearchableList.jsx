@@ -1,9 +1,11 @@
 import { BsPlusCircle } from 'react-icons/bs';
 import { useContext, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
-import { addContact, search } from '../lib/api';
+import { addChat, addContact, search } from '../lib/api';
 import { FcSearch } from 'react-icons/fc';
 import { ScreenContext } from '../App';
+import { debounce } from '../lib/utils';
+import BlankProfile from '../assets/blank-profile.png';
 
 const userListDev = [
   {
@@ -63,8 +65,9 @@ export default function SearchableList({ listType }) {
 
   const handleChange = async (event) => {
     setSearchString(event.target.value);
+    const searchList = listType.toLowerCase();
     const searchResult = await search(
-      [screenState.currentUser._id, ...screenState.currentUser.contacts],
+      [screenState.currentUser._id, ...screenState.currentUser[searchList]],
       event.target.value
     );
     if (event.target.value === '') {
@@ -77,15 +80,23 @@ export default function SearchableList({ listType }) {
   const handleClick = async (event) => {
     // Use the addContact API to add the contact to the current user.
     const currentUser = screenState.currentUser;
-    const newContactId = event.currentTarget.value;
-    await addContact(currentUser._id, newContactId);
+    const newChatOrContactId = event.currentTarget.value;
+    console.log('ID of clicked item: ', newChatOrContactId);
+    if (listType === 'CONTACTS') {
+      await addContact(currentUser._id, newChatOrContactId);
+    }
+    if (listType === 'CHATS') {
+      console.log(`Adding a chat between you (${currentUser._id}) and another user ${newChatOrContactId}`)    
+      await addChat(currentUser._id, newChatOrContactId);
+    }
     // Close the modal
     setScreenState({
       ...screenState,
-      modalState: false,
+      modalState: 'NONE',
       currentUser: {
         ...screenState.currentUser,
-        contacts: [...screenState.currentUser.contacts, newContactId],
+        // Update either the chat or the contacts list
+        [listType.toLowerCase()]: [...screenState.currentUser[listType.toLowerCase()], newChatOrContactId],
       },
     });
   };
@@ -101,7 +112,7 @@ export default function SearchableList({ listType }) {
       <div className='w-full h-10 px-4 flex items-center'>
         <input
           autoFocus
-          onChange={handleChange}
+          onChange={(event) => debounce(handleChange(event))}
           value={searchString}
           className='w-full h-full rounded-full pl-6'
           type='text'
@@ -134,7 +145,8 @@ const UserItem = ({ user, callback }) => {
     <li className='w-full h-12 flex justify-between items-center bg-grey-200 '>
       <img
         className='h-full aspect-square object-cover rounded-full'
-        src={user.img}
+        src={user.img || BlankProfile}
+        onError={(event) => event.target.src = BlankProfile}
         alt={`User ${user.firstName}`}
       />
       <h2 className='h-full w-full ml-4 flex items-center text-xl border-b border-gray-400'>

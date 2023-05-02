@@ -38,7 +38,8 @@ export default function AuthForm() {
         if (data) {
           setScreenState({
             ...screenState,
-            isAuthenticated: true
+            isAuthenticated: true,
+            currentUser: data
           })
         }
       } else {
@@ -51,6 +52,8 @@ export default function AuthForm() {
             isAuthenticated: true,
             currentUser: data
           })
+        } else {
+          // TODO: Handle redirect if login failed
         }
       }
     } catch (error) {
@@ -99,6 +102,7 @@ export default function AuthForm() {
           <div className='mb-8'>
             <div className='text-lg mb-4 ml-2 text-black/50'>Email</div>
             <Input
+              autoFocus
               required
               type='email'
               placeholder='Email'

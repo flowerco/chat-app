@@ -11,7 +11,7 @@ export default function MainScreen() {
 
   return (
     <div className="h-screen w-screen bg-green-200">
-      {screenState.modalState && <Modal childForm={null}/>}
+      {screenState.modalState !== 'NONE' && <Modal type={screenState.modalState} childForm={null}/>}
       <div className='flex w-full h-full bg-blue-500'>
         <Sidenav />
         {/* Two sidebars for a nice switching animation as one slides in and one slides out. */}

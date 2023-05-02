@@ -3,6 +3,7 @@ import { BsChatLeftTextFill } from 'react-icons/bs';
 import { MdSettings, MdLogout } from 'react-icons/md';
 import { FaUserFriends } from 'react-icons/fa';
 import { ScreenContext } from '../../App';
+import { logout } from '../../lib/api';
 
 export default function Sidenav() {
   const { screenState, setScreenState } = useContext(ScreenContext);
@@ -33,7 +34,8 @@ export default function Sidenav() {
     });
   };
 
-  const logout = (event) => {
+  const handleLogout = (event) => {
+    logout();
     setScreenState({
       ...screenState,
       isAuthenticated: false,
@@ -47,7 +49,7 @@ export default function Sidenav() {
     >
       <SidenavIcon
         callback={handleClick}
-        name='CHAT'
+        name='CHATS'
         icon={<BsChatLeftTextFill size='20' />}
         text='Chats'
       />
@@ -65,7 +67,7 @@ export default function Sidenav() {
         text="Settings"
       />
       <SidenavIcon
-        callback={logout}
+        callback={handleLogout}
         icon={<MdLogout size='32' />}
         text='Log Out'
       />
