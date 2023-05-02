@@ -4,7 +4,7 @@ import { MdDelete } from 'react-icons/md';
 import { ScreenContext } from '../App';
 import { deleteChat, deleteContact } from '../lib/api';
 import BlankProfile from '../assets/blank-profile.png';
-import { removeArrayItem } from '../lib/utils';
+import { capitaliseFirstLetter, removeArrayItem } from '../lib/utils';
 
 
 export default function UserList({ users, edit, type }) {
@@ -15,7 +15,6 @@ export default function UserList({ users, edit, type }) {
     if (edit) {
       const itemIndex = screenState.currentUser[type.toLowerCase()].indexOf(item.unqKey);
       const newItemList = removeArrayItem(screenState.currentUser[type.toLowerCase()], itemIndex);
-      console.log('New item list to show in sidebar: ', newItemList)
       // Check if the contact you're deleting is the one you're currently chatting with
       // TODO: Fix this, it doesn't work now that the chatID and userID are different...
       const isCurrentChat = screenState.currentChat._id === item.unqKey
@@ -81,7 +80,7 @@ const UserItem = ({ user, edit, type, callback }) => {
         alt={`User ${user.firstName}`}
       />
       <h2 className='h-full w-full ml-4 flex items-center text-xl border-b border-gray-400'>
-        {user.firstName} {user.lastName}
+        {capitaliseFirstLetter(user.firstName)} {capitaliseFirstLetter(user.lastName)}
       </h2>
       <button
         onClick={(event) => callback(event, user)}

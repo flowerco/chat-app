@@ -4,45 +4,43 @@ import BubbleList from '../messages/BubbleList';
 import ChatForm from '../messages/ChatForm';
 import BlankProfile from '../../assets/blank-profile.png';
 import FlowerCo from '../../assets/flowerco_logo.png';
+import { capitaliseFirstLetter } from '../../lib/utils';
 
-const initialChats = {
-  '6420a39af84077a288f95dc1': [
-    {
-      id: '6420a39af84077a288f95dc1',
-      timeStamp: new Date(Date.now() - 10 * 60000),
-      text: "Hi, this is Testy. Without concern for one's personal safety it seems appropriate to enquire whether or not you might prefer to engage in a ribald conversation the like of which shall not be heard of for many an age, perhap until the next ice age hath come and gone yonder from the great plains and shores of our fair land. Or nah?",
-    },
-    {
-      id: '6420a872f1863098e94830b6',
-      timeStamp: new Date(Date.now()),
-      text: 'Hi Testy. Not bad thanks!',
-    },
-  ],
-  '6420c552e5c8a30a572cfe39': [
-    {
-      id: '6420c552e5c8a30a572cfe39',
-      timeStamp: new Date(Date.now() - 10 * 60000),
-      text: "Whatup yo, it's Testy T!",
-    },
-  ],
-};
+const initialChats = [
+  {
+    _id: '6450cce396a128fcc79e2472',
+    userList: ['644f91e25dd6e3a045fa7cd6', '644f98214cb784ed82566245'],
+    bubbleList: [
+      {
+        _id: '644f98214cb784ed82566245',
+        timeStamp: new Date(Date.now() - 10 * 60000),
+        text: "Hi, this is Testmore. Without concern for one's personal safety it seems appropriate to enquire whether or not you might prefer to engage in a ribald conversation the like of which shall not be heard of for many an age, perhap until the next ice age hath come and gone yonder from the great plains and shores of our fair land. Or nah?",
+      },
+      {
+        _id: '644f91e25dd6e3a045fa7cd6',
+        timeStamp: new Date(Date.now()),
+        text: 'Hi Testy. Not bad thanks!',
+      },
+    ],
+  },
+];
 
 export default function ChatScreen({ chat }) {
-  const [chatState, setChatState] = useState(initialChats);
+  const [chatState, setChatState] = useState(initialChats[0]);
   const { screenState, setScreenState } = useContext(ScreenContext);
 
   const handleSubmit = (event) => {
     // 1. Update the state as it appears on the screen.
     setChatState({
       ...chatState,
-      [chat._id]: [
-        ...chatState[chat._id],
+      bubbleList: [
+        ...chatState.bubbleList,
         {
-          id: screenState.currentUser._id,
+          _id: screenState.currentUser._id,
           timeStamp: new Date(Date.now()),
           text: event.target.message.value,
-        },
-      ],
+        }
+      ]
     });
     // 2. Send to the contact via websocket, ideally with some encryption...
 
@@ -62,7 +60,11 @@ export default function ChatScreen({ chat }) {
               Freechat
             </span>
             by FlowerCo
-            <img src={FlowerCo} className='h-6 w-5 ml-2' alt='Small FlowerCo logo' />
+            <img
+              src={FlowerCo}
+              className='h-6 w-5 ml-2'
+              alt='Small FlowerCo logo'
+            />
           </p>
           {/* <p className='text-yellow-400 font-bold text-2xl'>Freechat</p> */}
           {/* <p className='text-sm'> by FlowerCo</p> */}
@@ -70,17 +72,17 @@ export default function ChatScreen({ chat }) {
         <div className='h-full flex justify-end items-center'>
           <p>
             Chatting to{' '}
-            <span className='text-yellow-400 font-bold'>{chat.firstName}</span>
+            <span className='text-yellow-400 font-bold'>{capitaliseFirstLetter(chat.firstName)}</span>
           </p>
           <img
             className='h-full p-2 aspect-square object-cover rounded-full'
             src={chat.userImg || BlankProfile}
-            onError={(event) => event.target.src = BlankProfile}
+            onError={(event) => (event.target.src = BlankProfile)}
             alt={`Contact`}
           />
         </div>
       </div>
-      <BubbleList chatList={chatState[chat._id]} />
+      <BubbleList bubbleList={chatState.bubbleList} />
       <ChatForm callback={handleSubmit} />
     </div>
   );

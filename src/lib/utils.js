@@ -16,6 +16,9 @@ export const debounce = (func, wait=300) => {
   };
 };
 
+export function capitaliseFirstLetter (string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 // export const getUserFromCookie = async (cookies) => {
 //   const jwt = cookies.get(process.env.COOKIE_NAME);
