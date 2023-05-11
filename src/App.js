@@ -4,6 +4,7 @@ import MainScreen from './components/screens/MainScreen';
 import AuthScreen from './components/screens/AuthScreen';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { verifyLogin } from './lib/api';
+import { socket } from './lib/socket';
 
 export const ScreenContext = createContext();
 
@@ -24,6 +25,33 @@ function App() {
   });
 
   const [loading, setLoading] = useState(true);
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [fooEvents, setFooEvents] = useState([]);
+
+  useEffect(() => {
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    function onFooEvent(value) {
+      setFooEvents(previous => [...previous, value]);
+    }
+
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.on('foo', onFooEvent);
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('foo', onFooEvent);
+    };
+  }, []);
+
 
   useEffect(() => {
     // On first load, fetch the current user if the cookie exists
@@ -42,6 +70,11 @@ function App() {
         setLoading(false);
       } else {
         // 3. Otherwise, stop the loading spinner and the login page will show.
+        setScreenState((screenState) => ({
+          ...screenState,
+          isAuthenticated: false,
+          currentUser: {}
+        }));
         setLoading(false);
       }
     }
