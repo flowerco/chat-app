@@ -1,20 +1,22 @@
-import { useContext } from 'react';
 import { BsChatLeftDots } from 'react-icons/bs';
 import { MdDelete } from 'react-icons/md';
-import { ScreenContext } from '../App';
 import { deleteChat, deleteContact } from '../lib/api';
 import BlankProfile from '../assets/blank-profile.png';
-import { capitaliseFirstLetter, removeArrayItem } from '../lib/utils';
+import { capitaliseFirstLetter } from '../lib/utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { authDeleteChat, authDeleteContact } from '../redux/authSlice';
+import { removeCurrentChat, updateCurrentChat } from '../redux/screenSlice';
 
 
 export default function UserList({ users, edit, type }) {
-  const { screenState, setScreenState } = useContext(ScreenContext);
+
+  const authState = useSelector(state => state.auth);
+  const screenState = useSelector(state => state.screen);
+  const dispatch = useDispatch();
 
   const handleClick = async (event, item) => {
     // Either go to /start the chat with this user, or delete the user.
     if (edit) {
-      const itemIndex = screenState.currentUser[type.toLowerCase()].indexOf(item.unqKey);
-      const newItemList = removeArrayItem(screenState.currentUser[type.toLowerCase()], itemIndex);
       // Check if the contact you're deleting is the one you're currently chatting with
       // TODO: Fix this, it doesn't work now that the chatID and userID are different...
       const isCurrentChat = screenState.currentChat._id === item.unqKey
@@ -23,31 +25,21 @@ export default function UserList({ users, edit, type }) {
         // We need to make sure that components fetching contacts when the screenState changes will
         // find the updated contact list, so await the delete before updating the state.
         if (type === 'CONTACTS') {
-          await deleteContact(screenState.currentUser._id, item.unqKey);
+          await deleteContact(authState.currentUser._id, item.unqKey);
+          dispatch(authDeleteContact(item.unqKey));
         } else if (type === 'CHATS') {
-          await deleteChat(screenState.currentUser._id, item.unqKey);
+          await deleteChat(authState.currentUser._id, item.unqKey);
+          dispatch(authDeleteChat(item.unqKey));
         }
-        setScreenState({
-          ...screenState,
-          currentChat: isCurrentChat ? {} : screenState.currentChat,
-          currentUser: {
-            ...screenState.currentUser,
-            [type.toLowerCase()]: newItemList
-          }
-        });
+        if (isCurrentChat) {
+          dispatch(removeCurrentChat());
+        }
       }
       await updateContactList();
       
     } else {
       console.log(`Start chat with user: ${event.currentTarget.value}`);
-      setScreenState({
-        ...screenState,
-        sidebarState: 0,
-        activeSidebar: 'NONE',
-        currentChat: {
-          ...item
-        }
-      });
+      dispatch(updateCurrentChat(item));
     }
   };
 

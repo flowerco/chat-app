@@ -1,3 +1,6 @@
+import { authLogout } from '../redux/authSlice';
+import store from '../redux/store';
+
 export const fetcher = async ({ url, method, body, json = true }) => {
   const cookieFlag = !['/register', '/login'].includes(url);
 
@@ -11,18 +14,16 @@ export const fetcher = async ({ url, method, body, json = true }) => {
     },
   });
 
-  // if (!res.ok) {
-  //   console.log('Fetch request failed with status ', res.status);
-  //   if ([401, 403].includes(res.status)) {
-  //     return { fetchStatus: 'Failed' };
-  //   } else {
-  //     // Handle any other errors
-  //     throw new Error('Api error');
-  //   }
-  // }
-
   if (!res.ok) {
-    throw new Error('Api error');
+    console.log('Fetch request failed with status ', res.status);
+    if ([401, 403].includes(res.status)) {
+      // If any request is no longer authorised then the cookie has expired and
+      // the user should be logged out.  
+      store.dispatch(authLogout());
+    } else {
+      // Handle any other errors
+      throw new Error('Api error');
+    }
   }
 
   if (json) {

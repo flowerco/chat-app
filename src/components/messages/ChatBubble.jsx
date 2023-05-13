@@ -1,11 +1,10 @@
-import { useContext, useEffect } from "react"
-import { ScreenContext } from "../../App"
+import { useEffect } from "react"
+import { useSelector } from "react-redux";
 
 export default function ChatBubble({ chatItem }) {
 
-  const { screenState } = useContext(ScreenContext);
-
-  const userId = screenState.currentUser._id;
+  const authState = useSelector(state => state.auth);
+  const userId = authState.currentUser._id;
 
   const isOnlyEmoji = (testString) => {
     return /^\p{Extended_Pictographic}+$/u.test(testString);

@@ -20,6 +20,12 @@ export function capitaliseFirstLetter (string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+export function replaceAtArrayIndex (array, index, value) {
+  const ret = array.slice(0);
+  ret[index] = value;
+  return ret;
+}
+
 // export const getUserFromCookie = async (cookies) => {
 //   const jwt = cookies.get(process.env.COOKIE_NAME);
 //   const { id } = await verify(jwt.value);

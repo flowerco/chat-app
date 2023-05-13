@@ -6,6 +6,9 @@ import { FcSearch } from 'react-icons/fc';
 import { ScreenContext } from '../App';
 import { debounce } from '../lib/utils';
 import BlankProfile from '../assets/blank-profile.png';
+import { useDispatch, useSelector } from 'react-redux';
+import { authAddChat, authAddContact } from '../redux/authSlice';
+import { closeModal } from '../redux/screenSlice';
 
 const userListDev = [
   {
@@ -59,15 +62,18 @@ const userListDev = [
 ];
 
 export default function SearchableList({ listType }) {
-  const { screenState, setScreenState } = useContext(ScreenContext);
+  
   const [itemList, setItemList] = useState([]);
   const [searchString, setSearchString] = useState('');
+
+  const authState = useSelector(state => state.auth);
+  const dispatch = useDispatch();
 
   const handleChange = async (event) => {
     setSearchString(event.target.value);
     const searchList = listType.toLowerCase();
     const searchResult = await search(
-      [screenState.currentUser._id, ...screenState.currentUser[searchList]],
+      [authState.currentUser._id, ...authState.currentUser[searchList]],
       event.target.value
     );
     if (event.target.value === '') {
@@ -79,33 +85,20 @@ export default function SearchableList({ listType }) {
 
   const handleClick = async (event) => {
     // Use the addContact API to add the contact to the current user.
-    const currentUser = screenState.currentUser;
+    const currentUser = authState.currentUser;
     const newChatOrContactId = event.currentTarget.value;
     console.log('ID of clicked item: ', newChatOrContactId);
     if (listType === 'CONTACTS') {
       await addContact(currentUser._id, newChatOrContactId);
+      dispatch(authAddContact(newChatOrContactId));
     }
     if (listType === 'CHATS') {
       console.log(`Adding a chat between you (${currentUser._id}) and another user ${newChatOrContactId}`)    
       await addChat(currentUser._id, newChatOrContactId);
+      dispatch(authAddChat(newChatOrContactId));
     }
-    // Close the modal
-    setScreenState({
-      ...screenState,
-      modalState: 'NONE',
-      currentUser: {
-        ...screenState.currentUser,
-        // Update either the chat or the contacts list
-        [listType.toLowerCase()]: [...screenState.currentUser[listType.toLowerCase()], newChatOrContactId],
-      },
-    });
+    dispatch(closeModal());
   };
-
-  // When the button on a user is clicked, we want to add that user's id to the list of contacts on the logged
-  // in user's document in the db.
-  // const handleClick = async (event) => {
-  //   const data = await addContact(event.target.user);
-  // }
 
   return (
     <div className='w-full h-full mt-4 flex flex-col justify-center items-center'>

@@ -1,45 +1,22 @@
-import { useContext } from 'react';
 import { BsChatLeftTextFill } from 'react-icons/bs';
 import { MdSettings, MdLogout } from 'react-icons/md';
 import { FaUserFriends } from 'react-icons/fa';
-import { ScreenContext } from '../../App';
 import { logout } from '../../lib/api';
+import { useDispatch } from 'react-redux';
+import { showSidebar } from '../../redux/screenSlice';
+import { authLogout } from '../../redux/authSlice';
 
 export default function Sidenav() {
-  const { screenState, setScreenState } = useContext(ScreenContext);
 
-  function replaceAt(array, index, value) {
-    const ret = array.slice(0);
-    ret[index] = value;
-    return ret;
-  }
+  const dispatch = useDispatch();
 
   const handleClick = (event) => {
-    let sidebarToShow;
-    if (screenState.activeSidebar === event.currentTarget.name) {
-      sidebarToShow = 0;
-    } else {
-      sidebarToShow = screenState.sidebarState === 1 ? 2 : 1;
-    }
-
-    setScreenState({
-      ...screenState,
-      sidebarState: sidebarToShow,
-      activeSidebar: sidebarToShow === 0 ? 'NONE' : event.currentTarget.name,
-      sidebarType: replaceAt(
-        screenState.sidebarType,
-        sidebarToShow - 1,
-        event.currentTarget.name
-      ),
-    });
+    dispatch(showSidebar(event.currentTarget.name));
   };
 
   const handleLogout = (event) => {
     logout();
-    setScreenState({
-      ...screenState,
-      isAuthenticated: false,
-    });
+    dispatch(authLogout());
   };
 
   return (

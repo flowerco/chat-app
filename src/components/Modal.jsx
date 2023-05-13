@@ -1,17 +1,15 @@
 // Modal popup for either creating account, adding contact or creating new chat.
 
-import { useContext } from "react";
-import { ScreenContext } from "../App";
+import { useDispatch } from "react-redux";
+import { closeModal } from "../redux/screenSlice";
 import SearchableList from "./SearchableList";
 
 export default function Modal({ type }) {
-  const { screenState, setScreenState } = useContext(ScreenContext);
+
+  const dispatch = useDispatch();
 
   const handleClick = (event) => {
-    setScreenState({
-      ...screenState,
-      modalState: 'NONE'
-    })
+    dispatch(closeModal());
   }
 
   return (

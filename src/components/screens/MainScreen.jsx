@@ -1,13 +1,12 @@
-import { useContext } from "react";
-import { ScreenContext } from "../../App";
 import ChatScreen from "./ChatScreen";
 import Modal from "../Modal";
 import Sidebar from "../navs/Sidebar";
 import Sidenav from "../navs/Sidenav";
+import { useSelector } from "react-redux";
 
 export default function MainScreen() {
 
-  const { screenState } = useContext(ScreenContext);
+  const screenState = useSelector(state => state.screen);
 
   return (
     <div className="h-screen w-screen bg-green-200">

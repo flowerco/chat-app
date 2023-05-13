@@ -5,6 +5,7 @@ import ChatForm from '../messages/ChatForm';
 import BlankProfile from '../../assets/blank-profile.png';
 import FlowerCo from '../../assets/flowerco_logo.png';
 import { capitaliseFirstLetter } from '../../lib/utils';
+import { useSelector } from 'react-redux';
 
 const initialChats = [
   {
@@ -27,7 +28,8 @@ const initialChats = [
 
 export default function ChatScreen({ chat }) {
   const [chatState, setChatState] = useState(initialChats[0]);
-  const { screenState, setScreenState } = useContext(ScreenContext);
+
+  const authState = useSelector(state => state.auth);
 
   const handleSubmit = (event) => {
     // 1. Update the state as it appears on the screen.
@@ -36,7 +38,7 @@ export default function ChatScreen({ chat }) {
       bubbleList: [
         ...chatState.bubbleList,
         {
-          _id: screenState.currentUser._id,
+          _id: authState.currentUser._id,
           timeStamp: new Date(Date.now()),
           text: event.target.message.value,
         }

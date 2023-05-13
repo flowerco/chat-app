@@ -5,24 +5,15 @@ import AuthScreen from './components/screens/AuthScreen';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { verifyLogin } from './lib/api';
 import { socket } from './lib/socket';
+import { useDispatch, useSelector } from 'react-redux';
+import { authLogin, authLogout } from './redux/authSlice';
 
 export const ScreenContext = createContext();
 
 function App() {
-  const [screenState, setScreenState] = useState({
-    isAuthenticated: false,
-    currentUser: {},
-    currentChat: {
-      _id: '644f98214cb784ed82566245',
-      firstName: 'testmore',
-      userImg:
-        'https://res.cloudinary.com/doeffypwo/image/upload/v1664008834/freechat/bki1ed0kngh7dj6vd464.jpg',
-    },
-    modalState: 'NONE',
-    sidebarState: 0,
-    activeSidebar: 'NONE',
-    sidebarType: ['NONE', 'NONE'],
-  });
+
+  const authState = useSelector(state => state.auth);
+  const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(true);
   const [isConnected, setIsConnected] = useState(socket.connected);
@@ -62,19 +53,11 @@ function App() {
       // 2. If the jwt is verified, the user will be fetched.
       // Add this user to the app state and set authenticated to true
       if (user) {
-        setScreenState((screenState) => ({
-          ...screenState,
-          isAuthenticated: true,
-          currentUser: user,
-        }));
+        dispatch(authLogin(user));
         setLoading(false);
       } else {
         // 3. Otherwise, stop the loading spinner and the login page will show.
-        setScreenState((screenState) => ({
-          ...screenState,
-          isAuthenticated: false,
-          currentUser: {}
-        }));
+        dispatch(authLogout);
         setLoading(false);
       }
     }
@@ -82,17 +65,17 @@ function App() {
   }, []);
 
   return (
-    <ScreenContext.Provider value={{ screenState, setScreenState }}>
+    <div className='h-full w-full'>
       {/* TODO: We need a single background upon which renders either the loader, 
       the login component or the app screen. */}
       {loading ? (
         <ClipLoader />
-      ) : screenState.isAuthenticated ? (
+      ) : authState.isAuthenticated ? (
         <MainScreen />
       ) : (
         <AuthScreen />
       )}
-    </ScreenContext.Provider>
+    </div>
   );
 }
 

@@ -1,6 +1,7 @@
-import { useContext, useState } from 'react';
-import { ScreenContext } from '../../App';
+import { useState } from 'react';
 import { login, register } from '../../lib/api';
+import { useDispatch } from 'react-redux';
+import { authLogin } from '../../redux/authSlice';
 import Card from '../Card';
 import Input from '../Input';
 
@@ -25,7 +26,8 @@ const initial = { firstName: '', lastName: '', email: '', password: '' };
 export default function AuthForm() {
   const [formState, setFormState] = useState(initial);
   const [mode, setMode] = useState('signin');
-  const { screenState, setScreenState } = useContext(ScreenContext);
+
+  const dispatch = useDispatch();
 
   const content = mode === 'register' ? registerContent : signinContent;
 
@@ -36,22 +38,14 @@ export default function AuthForm() {
         const data = await register(formState);
         console.log(data);
         if (data) {
-          setScreenState({
-            ...screenState,
-            isAuthenticated: true,
-            currentUser: data
-          })
+          dispatch(authLogin(data));
         }
       } else {
         console.log('Verifying user...');
         const data = await login({ email: formState.email, password: formState.password} );
         console.log('Data returned: ', data);
         if (data) {
-          setScreenState({
-            ...screenState,
-            isAuthenticated: true,
-            currentUser: data
-          })
+          dispatch(authLogin(data));
         } else {
           // TODO: Handle redirect if login failed
         }
