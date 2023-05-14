@@ -1,13 +1,18 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setEditMode } from '../../redux/screenSlice';
 import SearchBar from '../SearchBar';
 import UserList from '../UserList';
 
 export default function SidebarList({ userList, typeName }) {
-  const [edit, setEdit] = useState(false);
+
+  const screenState = useSelector(state => state.screen);
+  const dispatch = useDispatch();
+
   const [searchString, setSearchString] = useState('');
 
   const toggleEdit = () => {
-    setEdit(!edit);
+    dispatch(setEditMode(!screenState.editMode));
   };
 
   const handleSearch = (string) => {
@@ -29,7 +34,7 @@ export default function SidebarList({ userList, typeName }) {
                     .includes(searchString)
                 : true
             )}
-            edit={edit}
+            edit={screenState.editMode}
             type={typeName}
           />
         ) : (
@@ -43,10 +48,10 @@ export default function SidebarList({ userList, typeName }) {
           <button
             onClick={toggleEdit}
             className={`rounded-md py-2 px-8 font-bold text-white ${
-              edit ? 'bg-green-600' : 'bg-blue-600'
+              screenState.editMode ? 'bg-green-600' : 'bg-blue-600'
             }`}
           >
-            {edit ? 'Done' : 'Edit'}
+            {screenState.editMode ? 'Done' : 'Edit'}
           </button>
         )}
       </div>

@@ -165,3 +165,42 @@ export const deleteChat = async (currentUserId, chatId) => {
     console.log(error);
   }
 };
+
+export const updateCurrentChat = async (currentUserId, chatId) => {
+  try {
+    const updatedCurrentChat = await fetcher({
+      url: 'http://localhost:3002/api/updateCurrentChat',
+      method: 'POST',
+      body: { currentUserId, chatId },
+    });
+    return updatedCurrentChat;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const fetchChatForContact = async (currentUserId, contactId) => {
+  try {
+    const contactChatId = await fetcher({
+      url: 'http://localhost:3002/api/fetchChatForContact',
+      method: 'POST',
+      body: { currentUserId, contactId },
+    });
+    return contactChatId;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const fetchChatById = async (userId, chatId) => {
+  try {
+    const chat = await fetcher({
+      url: 'http://localhost:3002/api/fetchChatById',
+      method: 'POST',
+      body: { userId, chatId },
+    });
+    return chat;
+  } catch (error) {
+    console.log(error);
+  }
+}

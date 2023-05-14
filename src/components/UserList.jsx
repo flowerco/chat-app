@@ -1,14 +1,14 @@
 import { BsChatLeftDots } from 'react-icons/bs';
 import { MdDelete } from 'react-icons/md';
-import { deleteChat, deleteContact } from '../lib/api';
+import { deleteChat, deleteContact, fetchChatById, fetchChatForContact, updateCurrentChat } from '../lib/api';
 import BlankProfile from '../assets/blank-profile.png';
 import { capitaliseFirstLetter } from '../lib/utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { authDeleteChat, authDeleteContact } from '../redux/authSlice';
-import { removeCurrentChat, updateCurrentChat } from '../redux/screenSlice';
+import { authDeleteChat, authDeleteContact, authUpdateCurrentChat } from '../redux/authSlice';
+import { hideSidebar } from '../redux/screenSlice';
 
 
-export default function UserList({ users, edit, type }) {
+export default function UserList({ users, type }) {
 
   const authState = useSelector(state => state.auth);
   const screenState = useSelector(state => state.screen);
@@ -16,10 +16,19 @@ export default function UserList({ users, edit, type }) {
 
   const handleClick = async (event, item) => {
     // Either go to /start the chat with this user, or delete the user.
-    if (edit) {
-      // Check if the contact you're deleting is the one you're currently chatting with
-      // TODO: Fix this, it doesn't work now that the chatID and userID are different...
-      const isCurrentChat = screenState.currentChat._id === item.unqKey
+    console.log('The item is...', item);
+    if (screenState.editMode) {
+      // Check if your currently showing the chat you're about to delete, or if the contact you're deleting is the one you're currently chatting with.
+      // TODO: Wondering now if this unification of the ContactList and ChatList components is more trouble than it's worth... so many more if conditions!
+      let isCurrentChat = false;
+      if (type === 'CONTACTS') {
+        const chatData = await fetchChatById(authState.currentUser._id, authState.currentUser.currentChat);
+        if (chatData) {
+          isCurrentChat = chatData.userList[0]._id === item.unqKey;
+        }
+      } else {
+        isCurrentChat = screenState.currentChat === item.unqKey;
+      } 
 
       const updateContactList = async () => {
         // We need to make sure that components fetching contacts when the screenState changes will
@@ -32,14 +41,26 @@ export default function UserList({ users, edit, type }) {
           dispatch(authDeleteChat(item.unqKey));
         }
         if (isCurrentChat) {
-          dispatch(removeCurrentChat());
+          dispatch(authUpdateCurrentChat(''));
         }
       }
       await updateContactList();
       
     } else {
-      console.log(`Start chat with user: ${event.currentTarget.value}`);
-      dispatch(updateCurrentChat(item));
+      console.log(`Start chat with user: `, event.currentTarget.value);
+      // If we clicked an existing chat, then no problem just find that chat from the ID
+      let chatId = item.unqKey;
+      console.log('Set current chat to: ', chatId);
+      // If we clicked a contact then we need to check if there is already a chat for that contact, 
+      // then either: 1) get the ID if it exists or 2) create a chat if one doesn't exist.
+      if (type === 'CONTACTS') {
+        chatId = await fetchChatForContact(authState.currentUser._id, item.unqKey);
+      }
+      await updateCurrentChat(authState.currentUser._id, chatId);
+
+      // We can just update the currentChat state with the current chat ID
+      dispatch(authUpdateCurrentChat(chatId));
+      dispatch(hideSidebar());
     }
   };
 
@@ -51,7 +72,7 @@ export default function UserList({ users, edit, type }) {
           <UserItem
             key={user.unqKey}
             user={user}
-            edit={edit}
+            edit={screenState.editMode}
             callback={handleClick}
           />
         );

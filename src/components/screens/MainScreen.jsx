@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 export default function MainScreen() {
 
   const screenState = useSelector(state => state.screen);
+  const authState = useSelector(state => state.auth);
 
   return (
     <div className="h-screen w-screen bg-green-200">
@@ -16,7 +17,11 @@ export default function MainScreen() {
         {/* Two sidebars for a nice switching animation as one slides in and one slides out. */}
         <Sidebar number={1} />
         <Sidebar number={2} />
-        <ChatScreen chat={screenState.currentChat}/>
+{/* 
+        TODO: Screenstate no longer has currentChat... this is now in the authState as a property of the user, but is just a chat ID...
+        I guess we need to fetch the chat/user data (eg. firstName, image) for this ID as well somewhere, possibly after it's created. */}
+
+        <ChatScreen chatId={authState.currentUser.currentChat}/>
       </div>
     </div>
   );

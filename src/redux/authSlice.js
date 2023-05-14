@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { removeArrayItem } from '../lib/utils';
+import screenSlice from './screenSlice';
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -34,8 +35,14 @@ export const authSlice = createSlice({
     authDeleteChat: (state, action) => {
       const itemIndex = state.currentUser.chats.indexOf(action.payload);
       const newChatList = removeArrayItem(state.currentUser.chats, itemIndex);
-      state.currentUser.contacts = newChatList;
+      state.currentUser.chats = newChatList;
+      state.currentUser.currentChat = '';
     },
+    authUpdateCurrentChat: (state, action) => {
+      // state.currentUser.currentChat = action.payload;
+      console.log('Updating current chat state with: ', action.payload);
+      state.currentUser.currentChat = action.payload;
+    }
   },
 });
 
@@ -46,6 +53,7 @@ export const {
   authAddContact,
   authDeleteChat,
   authDeleteContact,
+  authUpdateCurrentChat
 } = authSlice.actions;
 
 export default authSlice.reducer;

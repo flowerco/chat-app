@@ -4,14 +4,9 @@ import { replaceAtArrayIndex } from '../lib/utils';
 export const screenSlice = createSlice({
   name: 'screen',
   initialState: {
-    currentChat: {
-      _id: '644f98214cb784ed82566245',
-      firstName: 'testmore',
-      userImg:
-        'https://res.cloudinary.com/doeffypwo/image/upload/v1664008834/freechat/bki1ed0kngh7dj6vd464.jpg',
-    },
     modalState: 'NONE',
     sidebarState: 0,
+    editMode: false,
     activeSidebar: 'NONE',
     sidebarType: ['NONE', 'NONE'],
   },
@@ -42,17 +37,16 @@ export const screenSlice = createSlice({
         sidebarToShow - 1,
         sidebarName
       );
+      state.editMode = false;
     },
-    // Go to a new chat and hide the sidebar
-    updateCurrentChat: (state, action) => {
-      state.currentChat = { ...action.payload };
+    hideSidebar: (state) => {
       state.sidebarState = 0;
       state.activeSidebar = 'NONE';
+      state.editMode = false;
     },
-    // Hide the current chat, eg. when the contact is deleted.
-    removeCurrentChat: (state) => {
-      state.currentChat = {};
-    },
+    setEditMode: (state, action) => {
+      state.editMode = action.payload;
+    }
   },
 });
 
@@ -60,8 +54,8 @@ export const {
   openModal,
   closeModal,
   showSidebar,
-  updateCurrentChat,
-  removeCurrentChat,
+  hideSidebar,
+  setEditMode
 } = screenSlice.actions;
 
 export default screenSlice.reducer;
