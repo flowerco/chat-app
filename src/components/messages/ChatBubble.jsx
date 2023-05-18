@@ -18,7 +18,7 @@ export default function ChatBubble({ chatItem }) {
   // }, [chatItem, userId])
 
   return (
-    <div className={`max-w-5/6 border border-slate-500 rounded-md px-4 py-2
+    <div className={`max-w-5/6 border border-slate-500 rounded-md px-4 py-2 text-lg
     ${userId === chatItem._id ? 'bg-fuchsia-600 self-end text-white' : 'bg-yellow-600 self-start'}`}>
       <div className="flex flex-col">
         <p className={textSize}>{chatItem.text}</p>

@@ -5,12 +5,14 @@ import ChatForm from '../messages/ChatForm';
 import BlankProfile from '../../assets/blank-profile.png';
 import FlowerCo from '../../assets/flowerco_logo.png';
 import { capitaliseFirstLetter } from '../../lib/utils';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchChatById } from '../../lib/api';
+import { socketSetConnected } from '../../redux/socketSlice';
+import { socket } from '../../lib/socket';
 
 const mockChats = [
   {
-    _id: '6460e46e681aa1995ff3b300',
+    _id: '646167d3681aa1995ff3b5ab',
     userList: ['644f91e25dd6e3a045fa7cd6', '644f98214cb784ed82566245'],
     bubbleList: [
       {
@@ -58,8 +60,9 @@ export default function ChatScreen({ chatId }) {
   });
 
   const authState = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
-  const handleSubmit = (event) => {
+  const updateChatState = (message) => {
     // 1. Update the state as it appears on the screen.
     setChatState({
       ...chatState,
@@ -68,7 +71,7 @@ export default function ChatScreen({ chatId }) {
         {
           _id: authState.currentUser._id,
           timeStamp: new Date(Date.now()),
-          text: event.target.message.value,
+          text: message,
         },
       ],
     });
@@ -80,7 +83,6 @@ export default function ChatScreen({ chatId }) {
   useEffect(() => {
     // On first render we fetch the details of the other user(s) in this chat
     const fetchContactData = async (chatId) => {
-      console.log('Trying to fetch data for chat: ', chatId);
       let chatData = await fetchChatById(authState.currentUser._id, chatId);
       let contact = null;
       if (chatData) {
@@ -101,7 +103,7 @@ export default function ChatScreen({ chatId }) {
 
   return (
     <div className='w-full h-full ml-16 flex flex-col justify-center items-center bg-teal-500'>
-      <div className='w-full h-16 flex justify-between items-center px-4 bg-blue-500 text-white'>
+      <div className='w-full h-20 flex justify-between items-center px-4 bg-primary text-white'>
         <div className='flex flex-col'>
           <p className='flex justify-center items-center'>
             <span className='text-yellow-400 font-semibold text-4xl mr-4'>
@@ -135,7 +137,34 @@ export default function ChatScreen({ chatId }) {
         )}
       </div>
       <BubbleList bubbleList={chatState.bubbleList} />
-      <ChatForm callback={handleSubmit} />
+      <ChatForm callback={updateChatState} />
+      <div className='flex flex-col justify-center items-center fixed m-auto gap-2' >
+        <button
+          className='px-8 h-20 text-white bg-primary rounded-md'
+          onClick={(e) => socket.connect()}
+        >
+          Connect
+        </button>
+        <button
+          className='px-8 h-20 text-white bg-primary rounded-md'
+          onClick={(e) => socket.disconnect()}
+        >
+          Disconnect
+        </button>
+        <button
+          className='px-8 h-20 text-white bg-primary rounded-md'
+          // TODO: THIS JUST GOES STRAIGHT TO THE SERVER - HANDLE IT THERE!
+          onClick={(e) => socket.emit('join-chat', '1000234', 'Sam')}
+        >
+          Join
+        </button>
+        <button
+          className='px-8 h-20 text-white bg-primary rounded-md'
+          onClick={(e) => socket.emit('send-message', 'wibble')}
+        >
+          Emit
+        </button>
+      </div>
     </div>
   );
 }

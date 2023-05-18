@@ -24,7 +24,7 @@ export default function SidebarList({ userList, typeName }) {
   return (
     <div className='h-full w-full flex flex-col'>
       <SearchBar type={typeName} callback={handleSearch} />
-      <div className='w-full flex-grow'>
+      <div className='w-full'>
         {userList.length > 0 ? (
           <UserList
             users={userList.filter((user) =>

@@ -1,65 +1,13 @@
 import { BsPlusCircle } from 'react-icons/bs';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 import { addChat, addContact, search } from '../lib/api';
 import { FcSearch } from 'react-icons/fc';
-import { ScreenContext } from '../App';
 import { debounce } from '../lib/utils';
 import BlankProfile from '../assets/blank-profile.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { authAddChat, authAddContact } from '../redux/authSlice';
 import { closeModal } from '../redux/screenSlice';
-
-const userListDev = [
-  {
-    _id: 1001,
-    firstName: 'Brian',
-    lastName: 'Smith',
-    img: 'https://res.cloudinary.com/doeffypwo/image/upload/v1664008834/freechat/bki1ed0kngh7dj6vd464.jpg',
-  },
-  {
-    _id: 1002,
-    firstName: 'Sidney',
-    lastName: 'Smith',
-    img: 'https://res.cloudinary.com/doeffypwo/image/upload/v1664008834/freechat/bki1ed0kngh7dj6vd464.jpg',
-  },
-  {
-    _id: 1003,
-    firstName: 'Tom',
-    lastName: 'Smith',
-    img: 'https://res.cloudinary.com/doeffypwo/image/upload/v1664008834/freechat/bki1ed0kngh7dj6vd464.jpg',
-  },
-  {
-    _id: 1004,
-    firstName: 'Gillian',
-    lastName: 'Smith',
-    img: 'https://res.cloudinary.com/doeffypwo/image/upload/v1664008834/freechat/bki1ed0kngh7dj6vd464.jpg',
-  },
-  {
-    _id: 1005,
-    firstName: 'Wilbur',
-    lastName: 'Smith',
-    img: 'https://res.cloudinary.com/doeffypwo/image/upload/v1664008834/freechat/bki1ed0kngh7dj6vd464.jpg',
-  },
-  {
-    _id: 1006,
-    firstName: 'Smithy',
-    lastName: 'Smith',
-    img: 'https://res.cloudinary.com/doeffypwo/image/upload/v1664008834/freechat/bki1ed0kngh7dj6vd464.jpg',
-  },
-  {
-    _id: 1007,
-    firstName: 'Jenny',
-    lastName: 'Smith',
-    img: 'https://res.cloudinary.com/doeffypwo/image/upload/v1664008834/freechat/bki1ed0kngh7dj6vd464.jpg',
-  },
-  {
-    _id: 1008,
-    firstName: 'Sarah',
-    lastName: 'Smith',
-    img: 'https://res.cloudinary.com/doeffypwo/image/upload/v1664008834/freechat/bki1ed0kngh7dj6vd464.jpg',
-  },
-];
 
 export default function SearchableList({ listType }) {
   
@@ -84,10 +32,9 @@ export default function SearchableList({ listType }) {
   };
 
   const handleClick = async (event) => {
-    // Use the addContact API to add the contact to the current user.
     const currentUser = authState.currentUser;
     const newChatOrContactId = event.currentTarget.value;
-    console.log('ID of clicked item: ', newChatOrContactId);
+
     if (listType === 'CONTACTS') {
       await addContact(currentUser._id, newChatOrContactId);
       dispatch(authAddContact(newChatOrContactId));
@@ -115,7 +62,6 @@ export default function SearchableList({ listType }) {
           <FaSearch size='20' />
         </button>
       </div>
-      {/* TODO: Return either UserItem or ChatItem depending on the listType */}
       <div className='w-full grow mt-4 flex justify-center items-center'>
         {itemList.length > 0 ? (
           <ul className='h-full w-full overflow-scroll flex flex-col justify-start items-center px-6 gap-2'>
@@ -156,29 +102,3 @@ const UserItem = ({ user, callback }) => {
   );
 };
 
-// function SearchBar({ type, callback }) {
-//   const [search, setSearch] = useState('');
-
-//   const handleChange = (event) => {
-//     setSearch(event.target.value);
-//     callback(event.target.value);
-//   }
-
-//   return (
-//     <div className='w-full my-4 flex flex-col justify-center items-center' >
-//       <div className='w-full h-10 mt-4 px-4 flex items-center'>
-//         <input
-//           onChange={handleChange}
-//           value={search}
-//           className='w-full h-full rounded-full pl-6'
-//           type='text'
-//           placeholder={`Search for ${type.toLowerCase()}...`}
-//         />
-//         <button disabled type='submit' className='w-6 h-6 object-cover -ml-8'>
-//           <FaSearch size='20' />
-//         </button>
-//       </div>
-//       {}
-//     </div>
-//   );
-// }

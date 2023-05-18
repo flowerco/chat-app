@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { login, register } from '../../lib/api';
 import { useDispatch } from 'react-redux';
 import { authLogin } from '../../redux/authSlice';
-import Card from '../Card';
-import Input from '../Input';
+import Card from './Card';
+import Input from './Input';
 
 const registerContent = {
   linkUrl: '/signin',
@@ -73,6 +73,7 @@ export default function AuthForm() {
                   required
                   placeholder='First Name'
                   value={formState.firstName}
+                  autoComplete='given-name'
                   className='border-solid border-gray border-2 px-6 py-2 text-lg rounded-3xl w-full'
                   onChange={(e) =>
                     setFormState((s) => ({ ...s, firstName: e.target.value }))
@@ -85,6 +86,7 @@ export default function AuthForm() {
                   required
                   placeholder='Last Name'
                   value={formState.lastName}
+                  autoComplete='family-name'
                   className='border-solid border-gray border-2 px-6 py-2 text-lg rounded-3xl w-full'
                   onChange={(e) =>
                     setFormState((s) => ({ ...s, lastName: e.target.value }))
@@ -101,6 +103,7 @@ export default function AuthForm() {
               type='email'
               placeholder='Email'
               value={formState.email}
+              autoComplete='email'
               className='border-solid border-gray border-2 px-6 py-2 text-lg rounded-3xl w-full'
               onChange={(e) =>
                 setFormState((s) => ({ ...s, email: e.target.value }))
@@ -114,6 +117,7 @@ export default function AuthForm() {
               value={formState.password}
               type='password'
               placeholder='Password'
+              autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
               className='border-solid border-gray border-2 px-6 py-2 text-lg rounded-3xl w-full'
               onChange={(e) =>
                 setFormState((s) => ({ ...s, password: e.target.value }))

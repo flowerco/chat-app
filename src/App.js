@@ -7,6 +7,7 @@ import { verifyLogin } from './lib/api';
 import { socket } from './lib/socket';
 import { useDispatch, useSelector } from 'react-redux';
 import { authLogin, authLogout } from './redux/authSlice';
+import { socketAddEvent, socketSetConnected } from './redux/socketSlice';
 
 export const ScreenContext = createContext();
 
@@ -16,31 +17,44 @@ function App() {
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(true);
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  const [fooEvents, setFooEvents] = useState([]);
+
 
   useEffect(() => {
     function onConnect() {
-      setIsConnected(true);
+      console.log('Calling the onConnect function from the socket listener');
+      dispatch(socketSetConnected(true));
     }
 
     function onDisconnect() {
-      setIsConnected(false);
+      dispatch(socketSetConnected(false));
     }
 
-    function onFooEvent(value) {
-      setFooEvents(previous => [...previous, value]);
+    function onJoinChat(chatId, name) {
+      console.log(name,' is joining chat ',chatId);
+    }
+
+    function onSendMessage(value) {
+      dispatch(socketAddEvent(value));
+    }
+
+    function onUserConnected(name) {
+      console.log(`${name} connected.`);
     }
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
-    socket.on('foo', onFooEvent);
-
+    socket.on('join-chat', onJoinChat);
+    socket.on('send-message', onSendMessage);
+    socket.on('user-connected', onUserConnected);
+    
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
-      socket.off('foo', onFooEvent);
+      socket.off('join-chat', onJoinChat)
+      socket.off('send-message', onSendMessage);
+      socket.off('user-connected', onUserConnected);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 

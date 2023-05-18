@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { removeArrayItem } from '../lib/utils';
-import screenSlice from './screenSlice';
 
 export const authSlice = createSlice({
   name: 'auth',
