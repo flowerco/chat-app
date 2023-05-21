@@ -13,11 +13,6 @@ export const socketSlice = createSlice({
       console.log('Updating the socket state in redux to joined = ', action.payload);
       state.joined = action.payload;
     },
-    socketAddEvent: (state, action) => {
-      console.log('Adding event: ', action.payload);
-      state.events.push(action.payload);
-      console.log('Woohoo, new event! ', state.events);
-    }
   }
 });
 

@@ -3,11 +3,20 @@ import Modal from "../Modal";
 import Sidebar from "../navs/Sidebar";
 import Sidenav from "../navs/Sidenav";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { socket } from "../../lib/socket";
 
 export default function MainScreen() {
 
   const screenState = useSelector(state => state.screen);
   const authState = useSelector(state => state.auth);
+
+  useEffect(() => {
+    socket.connect();
+    return (() => socket.disconnect());
+    // We don't want to reconnect every time the socket updates. Remove the dependency to only run once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="h-screen w-screen bg-green-200">

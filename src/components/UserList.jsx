@@ -57,8 +57,6 @@ export default function UserList({ users, type }) {
       if (type === 'CONTACTS') {
         chatId = await fetchChatForContact(authState.currentUser._id, item.unqKey);
       }
-      // First ping the socket to join the chat room
-      socket.emit('join-chat', chatId, authState.currentUser.firstName);
 
       await updateCurrentChat(authState.currentUser._id, chatId);
       // We can just update the currentChat state with the current chat ID

@@ -1,14 +1,14 @@
-import { useContext, useEffect, useState } from 'react';
-import { ScreenContext } from '../../App';
+import { useEffect, useState } from 'react';
 import BubbleList from '../messages/BubbleList';
 import ChatForm from '../messages/ChatForm';
 import BlankProfile from '../../assets/blank-profile.png';
 import FlowerCo from '../../assets/flowerco_logo.png';
 import { capitaliseFirstLetter } from '../../lib/utils';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { fetchChatById } from '../../lib/api';
-import { socketSetConnected } from '../../redux/socketSlice';
 import { socket } from '../../lib/socket';
+import SocketTestButtons from './SocketTestButtons';
+
 
 const mockChats = [
   {
@@ -60,7 +60,6 @@ export default function ChatScreen({ chatId }) {
   });
 
   const authState = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
 
   const updateChatState = (message) => {
     // 1. Update the state as it appears on the screen.
@@ -76,7 +75,7 @@ export default function ChatScreen({ chatId }) {
       ],
     });
     // 2. Send to the contact via websocket, ideally with some encryption...
-
+    socket.emit('send-message', chatId, authState.currentUser._id, message);
     // 3. Save the new state to eg. localStorage, ideally with some encryption...
   };
 
@@ -92,14 +91,24 @@ export default function ChatScreen({ chatId }) {
     };
 
     if (chatId) {
+      // Fetch the contact data for this chat from the server.
       fetchContactData(chatId).then((data) => {
         setContact(data);
       });
+
+      // Fetch the chat data from local storage and update the state.
+      const filteredChats = mockChats.filter((chat) => chat._id === chatId);
+      setChatState(filteredChats[0] || initialState);
+      
+      // Connect to the chat via socket.io
+      socket.emit('join-chat', chatId, authState.currentUser.firstName);
     }
 
-    const filteredChats = mockChats.filter((chat) => chat._id === chatId);
-    setChatState(filteredChats[0] || initialState);
-  }, [authState, chatId]);
+    return (() => {
+      socket.emit('leave-chat', chatId, authState.currentUser.firstName);
+    })
+
+  }, [authState.currentUser, chatId]);
 
   return (
     <div className='w-full h-full ml-16 flex flex-col justify-center items-center bg-teal-500'>
@@ -116,8 +125,6 @@ export default function ChatScreen({ chatId }) {
               alt='Small FlowerCo logo'
             />
           </p>
-          {/* <p className='text-yellow-400 font-bold text-2xl'>Freechat</p> */}
-          {/* <p className='text-sm'> by FlowerCo</p> */}
         </div>
         {authState.currentUser.currentChat && (
           <div className='h-full flex justify-end items-center'>
@@ -138,33 +145,7 @@ export default function ChatScreen({ chatId }) {
       </div>
       <BubbleList bubbleList={chatState.bubbleList} />
       <ChatForm callback={updateChatState} />
-      <div className='flex flex-col justify-center items-center fixed m-auto gap-2' >
-        <button
-          className='px-8 h-20 text-white bg-primary rounded-md'
-          onClick={(e) => socket.connect()}
-        >
-          Connect
-        </button>
-        <button
-          className='px-8 h-20 text-white bg-primary rounded-md'
-          onClick={(e) => socket.disconnect()}
-        >
-          Disconnect
-        </button>
-        <button
-          className='px-8 h-20 text-white bg-primary rounded-md'
-          // TODO: THIS JUST GOES STRAIGHT TO THE SERVER - HANDLE IT THERE!
-          onClick={(e) => socket.emit('join-chat', '1000234', 'Sam')}
-        >
-          Join
-        </button>
-        <button
-          className='px-8 h-20 text-white bg-primary rounded-md'
-          onClick={(e) => socket.emit('send-message', 'wibble')}
-        >
-          Emit
-        </button>
-      </div>
+      {/* <SocketTestButtons /> */}
     </div>
   );
 }

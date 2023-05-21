@@ -4,59 +4,26 @@ import MainScreen from './components/screens/MainScreen';
 import AuthScreen from './components/screens/AuthScreen';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { verifyLogin } from './lib/api';
-import { socket } from './lib/socket';
+import { createSocketListeners, removeSocketListeners } from './lib/socket';
 import { useDispatch, useSelector } from 'react-redux';
 import { authLogin, authLogout } from './redux/authSlice';
-import { socketAddEvent, socketSetConnected } from './redux/socketSlice';
 
 export const ScreenContext = createContext();
 
 function App() {
-
-  const authState = useSelector(state => state.auth);
+  const authState = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(true);
 
-
+  // Set up event listeners for the socket.io connection at App level.
   useEffect(() => {
-    function onConnect() {
-      console.log('Calling the onConnect function from the socket listener');
-      dispatch(socketSetConnected(true));
-    }
-
-    function onDisconnect() {
-      dispatch(socketSetConnected(false));
-    }
-
-    function onJoinChat(chatId, name) {
-      console.log(name,' is joining chat ',chatId);
-    }
-
-    function onSendMessage(value) {
-      dispatch(socketAddEvent(value));
-    }
-
-    function onUserConnected(name) {
-      console.log(`${name} connected.`);
-    }
-
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-    socket.on('join-chat', onJoinChat);
-    socket.on('send-message', onSendMessage);
-    socket.on('user-connected', onUserConnected);
-    
+    createSocketListeners();
+    // Cleanup callback to remove the listeners between complete re-renders of the App.
     return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.off('join-chat', onJoinChat)
-      socket.off('send-message', onSendMessage);
-      socket.off('user-connected', onUserConnected);
+      removeSocketListeners();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
 
   useEffect(() => {
     // On first load, fetch the current user if the cookie exists
@@ -76,6 +43,7 @@ function App() {
       }
     }
     verify();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
