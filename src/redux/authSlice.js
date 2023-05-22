@@ -41,6 +41,10 @@ export const authSlice = createSlice({
       // state.currentUser.currentChat = action.payload;
       console.log('Updating current chat state with: ', action.payload);
       state.currentUser.currentChat = action.payload;
+    },
+    authUpdateUserImage: (state, action) => {
+      console.log('Updating user image to: ', action.payload);
+      state.currentUser.userImg = action.payload;
     }
   },
 });
@@ -52,7 +56,8 @@ export const {
   authAddContact,
   authDeleteChat,
   authDeleteContact,
-  authUpdateCurrentChat
+  authUpdateCurrentChat,
+  authUpdateUserImage
 } = authSlice.actions;
 
 export default authSlice.reducer;

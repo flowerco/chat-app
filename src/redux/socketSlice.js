@@ -10,7 +10,7 @@ export const socketSlice = createSlice({
   },
   reducers: {
     socketSetConnected: (state, action) => {
-      console.log('Updating the socket state in redux to joined = ', action.payload);
+      // console.log('Updating the socket state in redux to joined = ', action.payload);
       state.joined = action.payload;
     },
   }

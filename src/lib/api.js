@@ -179,6 +179,19 @@ export const updateCurrentChat = async (currentUserId, chatId) => {
   }
 }
 
+export const updateCurrentUserImage = async (currentUserId, newImg) => {
+  try {
+    const updatedCurrentUserImage = await fetcher({
+      url: 'http://localhost:3002/api/updateUserImage',
+      method:'POST',
+      body: {currentUserId, newImg}
+    })
+    return updatedCurrentUserImage;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export const fetchChatForContact = async (currentUserId, contactId) => {
   try {
     const contactChatId = await fetcher({

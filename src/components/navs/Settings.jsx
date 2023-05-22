@@ -1,6 +1,6 @@
 import BlankProfile from '../../assets/blank-profile.png';
-import { MdEdit } from 'react-icons/md';
 import { useState } from 'react';
+import UploadWidget from '../UploadWidget';
 
 export default function Settings({ user }) {
   // Settings required:
@@ -39,17 +39,7 @@ export default function Settings({ user }) {
         <div className='flex justify-between items-center'>
           <div className='image relative inline-block'>
             <div className='overlay absolute bottom-0 right-0 z-30 translate-x-3'>
-              <a href='/'>
-                <button
-                  type='button'
-                  className='p-2 bg-emerald-400 text-white rounded-full group'
-                >
-                  <MdEdit size={18} />
-                  <span className='edit-tooltip group-hover:scale-100'>
-                    Edit Profile
-                  </span>
-                </button>
-              </a>
+              <UploadWidget />
             </div>
             <img
               className='h-20 w-20 rounded-full bg-cover'
