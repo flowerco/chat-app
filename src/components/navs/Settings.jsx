@@ -39,6 +39,8 @@ export default function Settings({ user }) {
         <div className='flex justify-between items-center'>
           <div className='image relative inline-block'>
             <div className='overlay absolute bottom-0 right-0 z-30 translate-x-3'>
+              {/* TODO: Need a backup if we're offline, otherwise this will just crash... 
+               Is there a built in solution from Cloudinary? */}
               <UploadWidget />
             </div>
             <img
@@ -59,7 +61,7 @@ export default function Settings({ user }) {
             <input
               type='checkbox'
               className='h-8 w-8 accent-teal-500 text-red-400'
-              checked={checkedOne}
+              checked={user.isSearchable}
               onChange={handleClickOne}
             />
           </li>
@@ -76,7 +78,7 @@ export default function Settings({ user }) {
             Store messages for{' '}
             <input
               type='number'
-              value={daysToKeep}
+              value={user.keepTime}
               onChange={handleChange}
               className='w-16 pl-2 rounded-sm'
             ></input>{' '}

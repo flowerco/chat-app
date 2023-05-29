@@ -42,16 +42,23 @@ function App() {
         setLoading(false);
       }
     }
+    // setTimeout(() => verify(), 2000);
     verify();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const override = {
+    border: '8px solid'
+  };
 
   return (
     <div className='h-full w-full'>
       {/* TODO: We need a single background upon which renders either the loader, 
       the login component or the app screen. */}
       {loading ? (
-        <ClipLoader />
+        <div className='h-full w-full flex justify-center items-center bg-teal-500'>
+          <ClipLoader size={120} color={'#5865f2'} cssOverride={override}/>
+        </div>
       ) : authState.isAuthenticated ? (
         <MainScreen />
       ) : (

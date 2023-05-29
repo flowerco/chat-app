@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchChatById } from '../../lib/api';
 import { socket } from '../../lib/socket';
 import SocketTestButtons from './SocketTestButtons';
-import { chatAddMessage, chatInitialiseMessages } from '../../redux/chatSlice';
+import { chatAddMessage, chatInitialiseMessages } from '../../redux/authSlice';
 
 const mockChats = {
   '646167d3681aa1995ff3b5ab': {
@@ -48,7 +48,8 @@ const initialState = {
   bubbleList: [],
 };
 
-export default function ChatScreen({ chatId }) {
+
+export default function ChatScreen() {
   // const [chatState, setChatState] = useState(initialState);
   const [contact, setContact] = useState({
     firstName: '',
@@ -57,22 +58,15 @@ export default function ChatScreen({ chatId }) {
   });
 
   const authState = useSelector((state) => state.auth);
-  const chatState = useSelector((state) => state.chat);
+  const chatId = authState.currentUser.currentChat;
   const dispatch = useDispatch();
 
-  const updateChatState = (message) => {
-    // 1. Update the state as it appears on the screen.
-    dispatch(chatAddMessage({ senderId: authState.currentUser._id, message }));
-    // 2. Send to the contact via websocket, ideally with some encryption...
-    socket.emit('send-message', chatId, authState.currentUser._id, message);
-    // 3. Save the new state to eg. localStorage, ideally with some encryption...
-  };
-
   useEffect(() => {
-
     // On first render we fetch the details of the other user(s) in this chat
     const fetchContactData = async (chatId) => {
-      console.log(`fetching chat with id ${chatId} for user ${authState.currentUser._id}`);
+      console.log(
+        `fetching chat with id ${chatId} for user ${authState.currentUser._id}`
+      );
       let chatData = await fetchChatById(authState.currentUser._id, chatId);
       let contact = null;
       if (chatData) {
@@ -87,10 +81,6 @@ export default function ChatScreen({ chatId }) {
         setContact(data);
       });
 
-      // Fetch the chat data from local storage and update the state.
-      const filteredChats = mockChats[chatId];
-      dispatch(chatInitialiseMessages(filteredChats || initialState));
-
       // Connect to the chat via socket.io
       socket.emit('join-chat', chatId, authState.currentUser.firstName);
     } else {
@@ -104,40 +94,57 @@ export default function ChatScreen({ chatId }) {
 
   return (
     <div className='w-full h-full ml-16 flex flex-col justify-center items-center bg-teal-500'>
-      <div className='w-full h-20 flex justify-between items-center px-4 bg-primary text-white'>
-        <div className='flex flex-col'>
-          <p className='flex justify-center items-center'>
-            <span className='text-yellow-400 font-semibold text-4xl mr-4'>
-              Freechat
-            </span>
-            by FlowerCo
-            <img
-              src={FlowerCo}
-              className='h-6 w-5 ml-2'
-              alt='Small FlowerCo logo'
-            />
-          </p>
-        </div>
-        {authState.currentUser.currentChat && (
-          <div className='h-full flex justify-end items-center'>
-            <p>
-              Chatting to{' '}
-              <span className='text-yellow-400 font-bold'>
-                {capitaliseFirstLetter(contact.firstName)}
-              </span>
-            </p>
-            <img
-              className='h-full p-2 aspect-square object-cover rounded-full'
-              src={contact.userImg || BlankProfile}
-              onError={(event) => (event.target.src = BlankProfile)}
-              alt={`Contact`}
-            />
-          </div>
-        )}
-      </div>
-      <BubbleList bubbleList={chatState.bubbleList} />
-      <ChatForm callback={updateChatState} />
+      <TitleBar contact={contact} />
+      <BubbleList />
+      <ChatForm userId={authState.currentUser._id} chatId={chatId} />
       {/* <SocketTestButtons /> */}
     </div>
   );
+}
+
+function TitleBar ({ contact }) {
+
+  const socketState = useSelector(state => state.socket);
+  const authState = useSelector(state => state.auth);
+
+  return (
+    <div className='w-full h-20 flex justify-between items-center px-4 bg-primary text-white'>
+    <div className='flex flex-col'>
+      <p className='flex justify-center items-center'>
+        <span className='text-yellow-400 font-semibold text-4xl mr-4'>
+          Freechat
+        </span>
+        by FlowerCo
+        <img
+          src={FlowerCo}
+          className='h-6 w-5 ml-2'
+          alt='Small FlowerCo logo'
+        />
+      </p>
+    </div>
+    {authState.currentUser.currentChat && (
+      <div className='h-full flex justify-end items-center'>
+        <div className='h-full p-2 flex flex-col justify-center items-center gap-1'>
+          <p className='text-lg'>
+            Chatting to{' '}
+            <span className='text-yellow-400 font-bold'>
+              {capitaliseFirstLetter(contact.firstName)}
+            </span>
+          </p>
+          <div className='h-4 flex gap-2 items-center'>
+            <div className={`h-3 w-3 rounded-full ${socketState.isConnected ? 'bg-green-400' : 'bg-red-500'}`}></div>
+            <p className='text-sm'>{socketState.isConnected ? 'Online' : 'Offline'}</p>
+          </div>
+        </div>
+          <img
+            className='h-full p-2 aspect-square object-cover rounded-full'
+            src={contact.userImg || BlankProfile}
+            onError={(event) => (event.target.src = BlankProfile)}
+            alt={`Contact`}
+          />
+      </div>
+    )}
+  </div>
+  )
+
 }

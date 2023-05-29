@@ -5,9 +5,9 @@ const emptyChat = {
   bubbleList: [],
 };
 
-export const chatSlice = createSlice({
+const chatSlice = createSlice({
   name: 'chat',
-  initialState: emptyChat,
+  initialState: localStorage.getItem('freeChats') || emptyChat,
   reducers: {
     chatInitialiseMessages: (state, action) => {
       const chat = action.payload;
@@ -25,6 +25,6 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { chatInitialiseMessages, chatAddMessage } = chatSlice.actions;
+const { chatInitialiseMessages, chatAddMessage } = chatSlice.actions;
 
-export default chatSlice.reducer;
+// export default chatSlice.reducer;

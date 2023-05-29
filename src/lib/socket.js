@@ -1,7 +1,7 @@
 import store from '../redux/store';
 import { io } from 'socket.io-client';
 import { socketSetConnected } from '../redux/socketSlice';
-import { chatAddMessage } from '../redux/chatSlice';
+import { chatAddMessage } from '../redux/authSlice';
 
 // "undefined" means the URL will be computed from the `window.location` object
 const URL = process.env.REACT_SOCKET_URL || 'http://localhost:3002';

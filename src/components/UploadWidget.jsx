@@ -12,6 +12,7 @@ export default function UploadWidget() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // TODO: Check we are online here... trying to use the upload widget offline crashes everything!
     cloudinaryRef.current = window.cloudinary;
     widgetRef.current = cloudinaryRef.current.createUploadWidget(
       {

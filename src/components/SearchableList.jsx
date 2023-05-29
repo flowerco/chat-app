@@ -8,6 +8,7 @@ import BlankProfile from '../assets/blank-profile.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { authAddChat, authAddContact } from '../redux/authSlice';
 import { closeModal } from '../redux/screenSlice';
+import { saveState } from '../lib/localStorage';
 
 export default function SearchableList({ listType }) {
   
@@ -40,9 +41,14 @@ export default function SearchableList({ listType }) {
       dispatch(authAddContact(newChatOrContactId));
     }
     if (listType === 'CHATS') {
-      console.log(`Adding a chat between you (${currentUser._id}) and another user ${newChatOrContactId}`)    
-      await addChat(currentUser._id, newChatOrContactId);
-      dispatch(authAddChat(newChatOrContactId));
+      console.log(`Adding a chat between you (${currentUser._id}) and another user ${newChatOrContactId}`)   
+      // 1. Add the chat ID to the database (just as an ID in the currentUser.chats list) 
+      const newChatId = await addChat(currentUser._id, newChatOrContactId);
+      console.log('New chat created: ', newChatId);
+      // 2. Add the chat to the state, so that it's visible on screen.
+      dispatch(authAddChat(newChatId));
+      // 3. Save the new chat to localStorage, so the messages can persist locally between sessions.
+      saveState( newChatId, { userList: [currentUser._id, newChatOrContactId], bubbleList: [] })
     }
     dispatch(closeModal());
   };
