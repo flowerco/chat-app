@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import BubbleList from '../messages/BubbleList';
+import BubbleList, { MemoisedBubbleList } from '../messages/BubbleList';
 import ChatForm from '../messages/ChatForm';
 import BlankProfile from '../../assets/blank-profile.png';
 import FlowerCo from '../../assets/flowerco_logo.png';
@@ -59,13 +59,12 @@ export default function ChatScreen() {
 
   const authState = useSelector((state) => state.auth);
   const chatId = authState.currentUser.currentChat;
-  const dispatch = useDispatch();
 
   useEffect(() => {
     // On first render we fetch the details of the other user(s) in this chat
     const fetchContactData = async (chatId) => {
       console.log(
-        `fetching chat with id ${chatId} for user ${authState.currentUser._id}`
+        `fetching contact data for chat ID ${chatId} on user ${authState.currentUser._id}`
       );
       let chatData = await fetchChatById(authState.currentUser._id, chatId);
       let contact = null;
@@ -92,10 +91,11 @@ export default function ChatScreen() {
     };
   }, [authState.currentUser, chatId]);
 
+
   return (
     <div className='w-full h-full ml-16 flex flex-col justify-center items-center bg-teal-500'>
       <TitleBar contact={contact} />
-      <BubbleList />
+      <MemoisedBubbleList />
       <ChatForm userId={authState.currentUser._id} chatId={chatId} />
       {/* <SocketTestButtons /> */}
     </div>

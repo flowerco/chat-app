@@ -28,13 +28,15 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 // Needs to be 2 really. Can't keep pulling the full list or holding it in memory.
 
+
+// Subscribing seems too messy, always firing on ANY state change. Maybe instead lets have a useEffect at the chat (either screen or bubbleList) level
+// and save when the state changes!
+ 
 // store.subscribe(debounce(() => {
-//   // Ah crap, authState isn't populated when the app loads... so how can I pull the chat ID and get the
-//   // chat from storage? Do I need a thunk dependent on the auth population?
-//   const chatId = store.getState().auth.currentChat;
-//   const chatToSave = store.getState().chat;
-//   if (chatId) {
-//     console.log('Trying to save the following state to localStorage: ', chatToSave);
+//   const chatId = store.getState().auth.currentUser.currentChat;
+//   const chatToSave = store.getState().auth.currentChat;
+//   if (chatId && chatToSave.userList.length > 0) {
+//     console.log('SUBSCRIBED: Saving the following state to localStorage: ', chatToSave);
 //     saveState(chatId, chatToSave);
 //   }
 // }, 1000));

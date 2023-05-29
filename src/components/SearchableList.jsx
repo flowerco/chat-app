@@ -48,7 +48,7 @@ export default function SearchableList({ listType }) {
       // 2. Add the chat to the state, so that it's visible on screen.
       dispatch(authAddChat(newChatId));
       // 3. Save the new chat to localStorage, so the messages can persist locally between sessions.
-      saveState( newChatId, { userList: [currentUser._id, newChatOrContactId], bubbleList: [] })
+      // saveState( newChatId, { userList: [currentUser._id, newChatOrContactId], bubbleList: [] })
     }
     dispatch(closeModal());
   };

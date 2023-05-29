@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { loadState, saveState } from '../lib/localStorage';
+import { loadState } from '../lib/localStorage';
 import { removeArrayItem } from '../lib/utils';
 
 const emptyChat = {

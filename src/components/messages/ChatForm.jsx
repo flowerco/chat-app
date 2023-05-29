@@ -27,17 +27,17 @@ export default function ChatForm({ userId, chatId }) {
     // 3. Save the new state to eg. localStorage, ideally with some encryption...
     // Should this be in a callback from the dispatch? Ideally would just use the new state instead of redefining
     // the state here to save it...
-    saveState(chatId, {
-      userList: authState.currentChat.userList,
-      bubbleList: [
-        ...authState.currentChat.bubbleList,
-        {
-          _id: userId,
-          timeStamp: new Date(Date.now()).toISOString(),
-          text: message,
-        },
-      ],
-    });
+    // saveState(chatId, {
+    //   userList: authState.currentChat.userList,
+    //   bubbleList: [
+    //     ...authState.currentChat.bubbleList,
+    //     {
+    //       _id: userId,
+    //       timeStamp: new Date(Date.now()).toISOString(),
+    //       text: message,
+    //     },
+    //   ],
+    // });
     // 1. Update the state as it appears on the screen.
     dispatch(chatAddMessage({ senderId: userId, message }));
     // 2. Send to the contact via websocket, ideally with some encryption...

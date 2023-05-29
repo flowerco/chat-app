@@ -1,6 +1,7 @@
 import { BsChatLeftDots } from 'react-icons/bs';
 import { MdDelete } from 'react-icons/md';
 import {
+  addChat,
   deleteChat,
   deleteContact,
   fetchChatById,
@@ -18,7 +19,7 @@ import {
 } from '../redux/authSlice';
 import { hideSidebar } from '../redux/screenSlice';
 import { socket } from '../lib/socket';
-import { deleteState, loadState } from '../lib/localStorage';
+import { deleteState, loadState, saveState } from '../lib/localStorage';
 import { useEffect } from 'react';
 
 export default function UserList({ users, type }) {
@@ -76,21 +77,34 @@ export default function UserList({ users, type }) {
         );
       }
 
-      await updateCurrentChat(authState.currentUser._id, chatId);
-      // We can just update the currentChat state with the current chat ID
-      dispatch(authUpdateCurrentChat(chatId));
-
-      // Pull the selected chat from localstorage, and create it if it doesn't exist.
-      const persistedChatState = loadState(chatId);
-      // We need a backup empty state to add here in case the cache has been deleted.
-      dispatch(
-        chatInitialiseMessages(
-          persistedChatState || {
-            userList: [authState.currentUser._id, item._id],
-            bubbleList: [],
-          }
-        )
-      );
+      if (chatId) {
+        console.log('Chat exists, updating current chat in DB and state.');
+        await updateCurrentChat(authState.currentUser._id, chatId);
+        // We can just update the currentChat state with the current chat ID
+        dispatch(authUpdateCurrentChat(chatId));
+  
+        // Pull the selected chat from localstorage, and create it if it doesn't exist.
+        const persistedChatState = loadState(chatId);
+        // We need a backup empty state to add here in case the cache has been deleted.
+        dispatch(
+          chatInitialiseMessages(
+            persistedChatState || {
+              userList: [authState.currentUser._id, item._id],
+              bubbleList: [],
+            }
+          )
+        );
+      } else {
+        console.log('Chat does not exist, creating new chat and saving to DB and state.');
+        const newChatId = await addChat(authState.currentUser._id, item._id);
+        dispatch(authUpdateCurrentChat(newChatId));
+        const newChat = {
+          userList: [authState.currentUser._id, item._id],
+          bubbleList: [],
+        }
+        dispatch(chatInitialiseMessages(newChat));
+        // saveState(newChatId, newChat);
+      }
 
       dispatch(hideSidebar());
     }
