@@ -49,10 +49,14 @@ export const authSlice = createSlice({
       state.currentUser.contacts = newContactList;
     },
     authAddChat: (state, action) => {
-      state.currentUser.chats.push(action.payload);
+      const {currentUserId, contactId, chatId} = action.payload;
+      state.currentUser.chats.push(chatId);
       // This will rerender the screen to show the new chat that was just created.
-      state.currentUser.currentChat = action.payload;
-      state.currentChat = emptyChat;
+      state.currentUser.currentChat = chatId;
+      state.currentChat = {
+        userList: [currentUserId, contactId],
+        bubbleList: []
+      };
     },
     authDeleteChat: (state, action) => {
       // const itemIndex = state.currentUser.chats.indexOf(action.payload);
