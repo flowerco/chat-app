@@ -1,15 +1,31 @@
 import { AES, enc } from 'crypto-js';
 
-export const loadState = ( chatId ) => {
+function hasDaysPassed(dateString, numberOfDays) {
+  const currentDate = new Date(); // Get the current date
+  const givenDate = new Date(dateString); // Convert the given ISO string to a date object
+
+  // Calculate the difference in milliseconds between the current date and the given date
+  const differenceInMs = currentDate - givenDate;
+
+  // Calculate the number of days from the difference in milliseconds
+  const daysPassed = Math.floor(differenceInMs / (1000 * 60 * 60 * 24));
+
+  return daysPassed >= numberOfDays;
+}
+
+
+export const loadState = ( chatId, keepDays ) => {
   try {
     const encryptedState = localStorage.getItem(chatId);
     if (encryptedState === null) {
       return undefined;
     }
-    console.log('State pulled from localStorage: ', encryptedState);
-    const decryptedState = AES.decrypt(encryptedState, process.env.REACT_APP_MESSAGE_ENCRYPTION_KEY || 'test_secret_key').toString(enc.Utf8);
-    console.log('Decrypted state: ', decryptedState);
-    return JSON.parse(decryptedState);
+    const decryptedState = AES.decrypt(encryptedState, process.env.REACT_APP_MESSAGE_ENCRYPTION_KEY).toString(enc.Utf8);
+    const messageState = JSON.parse(decryptedState);
+    
+    // Apply a filter to remove any old messages.
+    messageState.bubbleList = messageState.bubbleList.filter(bubble => !hasDaysPassed(bubble.timeStamp, keepDays))
+    return messageState;
   } catch {
     // The fallback is always to return undefined and let the Redux reducer load the state.
     return undefined
@@ -19,9 +35,7 @@ export const loadState = ( chatId ) => {
 export const saveState = (chatId, state) => {
   try {
     // When we receive the state, update the localStorage item for that chat.
-    console.log('Saving the following state to localStorage: ', JSON.stringify(state));
-    const encryptedState = AES.encrypt(JSON.stringify(state), process.env.REACT_APP_MESSAGE_ENCRYPTION_KEY || 'test_secret_key').toString();
-    console.log('Saving the following serialised state to localStorage: ', encryptedState);
+    const encryptedState = AES.encrypt(JSON.stringify(state), process.env.REACT_APP_MESSAGE_ENCRYPTION_KEY).toString();
     localStorage.setItem(chatId, encryptedState);
   } catch (err) {
     // Ignore write errors

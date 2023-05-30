@@ -6,7 +6,7 @@ import {
   deleteContact,
   fetchChatById,
   fetchChatForContact,
-  updateCurrentChat,
+  updateCurrentUserProperty,
 } from '../lib/api';
 import BlankProfile from '../assets/blank-profile.png';
 import { capitaliseFirstLetter } from '../lib/utils';
@@ -18,9 +18,7 @@ import {
   chatInitialiseMessages,
 } from '../redux/authSlice';
 import { hideSidebar } from '../redux/screenSlice';
-import { socket } from '../lib/socket';
-import { deleteState, loadState, saveState } from '../lib/localStorage';
-import { useEffect } from 'react';
+import { deleteState, loadState } from '../lib/localStorage';
 
 export default function UserList({ users, type }) {
   const authState = useSelector((state) => state.auth);
@@ -29,7 +27,7 @@ export default function UserList({ users, type }) {
 
   const handleClick = async (event, item) => {
     // Either go to start the chat with this user, or delete the user.
-    console.log('The item is...', item);
+    // console.log('The item is...', item);
     if (screenState.editMode) {
       // Check if your currently showing the chat you're about to delete, or if the contact you're deleting is the one you're currently chatting with.
       // TODO: Wondering now if this unification of the ContactList and ChatList components is more trouble than it's worth... so many more if conditions!
@@ -64,10 +62,9 @@ export default function UserList({ users, type }) {
       };
       await updateContactList();
     } else {
-      console.log(`Start chat with user: `, event.currentTarget.value);
       // If we clicked an existing chat, then no problem just find that chat from the ID
       let chatId = item.unqKey;
-      console.log('Set current chat to: ', chatId);
+      // console.log('Set current chat to: ', chatId);
       // If we clicked a contact then we need to check if there is already a chat for that contact,
       // then either: 1) get the ID if it exists or 2) create a chat if one doesn't exist.
       if (type === 'CONTACTS') {
@@ -78,13 +75,19 @@ export default function UserList({ users, type }) {
       }
 
       if (chatId) {
-        console.log('Chat exists, updating current chat in DB and state.');
-        await updateCurrentChat(authState.currentUser._id, chatId);
+        await updateCurrentUserProperty(
+          authState.currentUser._id,
+          'currentChat',
+          chatId.toString()
+        );
         // We can just update the currentChat state with the current chat ID
         dispatch(authUpdateCurrentChat(chatId));
-  
+
         // Pull the selected chat from localstorage, and create it if it doesn't exist.
-        const persistedChatState = loadState(chatId);
+        const persistedChatState = loadState(
+          chatId,
+          authState.currentUser.keepTime
+        );
         // We need a backup empty state to add here in case the cache has been deleted.
         dispatch(
           chatInitialiseMessages(
@@ -95,15 +98,15 @@ export default function UserList({ users, type }) {
           )
         );
       } else {
-        console.log('Chat does not exist, creating new chat and saving to DB and state.');
+        // If the chat does not exist, create a new chat and save to DB and state.
+        // When the state updates this will trigger a useEffect in the bubbleList to show the new chat.
         const newChatId = await addChat(authState.currentUser._id, item._id);
         dispatch(authUpdateCurrentChat(newChatId));
         const newChat = {
           userList: [authState.currentUser._id, item._id],
           bubbleList: [],
-        }
+        };
         dispatch(chatInitialiseMessages(newChat));
-        // saveState(newChatId, newChat);
       }
 
       dispatch(hideSidebar());

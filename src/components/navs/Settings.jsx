@@ -1,6 +1,9 @@
 import BlankProfile from '../../assets/blank-profile.png';
 import { useState } from 'react';
 import UploadWidget from '../UploadWidget';
+import { useDispatch } from 'react-redux';
+import { authUpdateKeepTime } from '../../redux/authSlice';
+import { updateCurrentUserProperty } from '../../lib/api';
 
 export default function Settings({ user }) {
   // Settings required:
@@ -12,6 +15,8 @@ export default function Settings({ user }) {
   const [checkedOne, setCheckedOne] = useState(true);
   const [checkedTwo, setCheckedTwo] = useState(true);
   const [daysToKeep, setDaysToKeep] = useState(10);
+
+  const dispatch = useDispatch();
 
   const handleClickOne = () => {
     setCheckedOne(!checkedOne);
@@ -28,7 +33,7 @@ export default function Settings({ user }) {
     } else {
       value = '';
     }
-    setDaysToKeep(value);
+    dispatch();
   };
 
   const image = user.userImg || BlankProfile;
@@ -79,7 +84,14 @@ export default function Settings({ user }) {
             <input
               type='number'
               value={user.keepTime}
-              onChange={handleChange}
+              onChange={(event) => {
+                updateCurrentUserProperty(
+                  user._id,
+                  'keepTime',
+                  event.target.value
+                );
+                dispatch(authUpdateKeepTime(event.target.value));
+              }}
               className='w-16 pl-2 rounded-sm'
             ></input>{' '}
             days.

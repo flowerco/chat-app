@@ -192,6 +192,33 @@ export const updateCurrentUserImage = async (currentUserId, newImg) => {
   }
 }
 
+export const updateCurrentUserKeepTime = async (currentUserId, newKeepTime) => {
+  try {
+    const updatedKeepTime = await fetcher({
+      url: 'http://localhost:3002/api/updateKeepTime',
+      method:'POST',
+      body: {currentUserId, newKeepTime}
+    })
+    return updatedKeepTime;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const updateCurrentUserProperty = async (currentUserId, propertyName, propertyValue) => {
+  try {
+    const apiString = 'http://localhost:3002/api/updateUserProperty';
+    const updatedProperty = await fetcher({
+      url: apiString,
+      method: 'POST',
+      body: {currentUserId, propertyName, propertyValue}
+    });
+    return updatedProperty;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export const fetchChatForContact = async (currentUserId, contactId) => {
   try {
     const contactChatId = await fetcher({

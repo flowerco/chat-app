@@ -24,7 +24,6 @@ function BubbleList() {
   // Custom hook to compare the current value of state/props to the previous value
   function useCompare (val) {
     let prevVal = usePrevious(val)
-    console.log(`Prev val: ${prevVal} vs. new val: ${val}`);
     return prevVal !== val;
   }
   
@@ -41,10 +40,10 @@ function BubbleList() {
 
   useEffect(() => {
     if (hasChatIdChanged) {
-      console.log('Chat ID updated, so a new chat loaded, so don\'t save the state');
+      // console.log('Chat ID updated, so a new chat loaded, so don\'t save the state');
       return;
     }
-    console.log('Saving chat state in my new fancy useEffect');
+    // console.log('Saving chat state in my new fancy useEffect');
     saveState(currentChatId, chatState);
   }, [hasChatIdChanged, currentChatId, chatState]);
 

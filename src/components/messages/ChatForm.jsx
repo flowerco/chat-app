@@ -66,7 +66,7 @@ export default function ChatForm({ userId, chatId }) {
   return (
     <form
       className='fixed bottom-0 left-0 w-full h-24
-      flex justify-center items-end pb-4 pl-28 pr-12'
+      flex justify-center items-end pb-4 pl-16 sm:pl-28 sm:pr-12'
       onSubmit={handleSubmit}
     >
       <textarea

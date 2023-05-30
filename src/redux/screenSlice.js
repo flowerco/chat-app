@@ -12,7 +12,7 @@ export const screenSlice = createSlice({
   },
   reducers: {
     openModal: (state, action) => {
-      console.log('Opening modal with type: ', action.payload);
+      // console.log('Opening modal with type: ', action.payload);
       state.modalState = action.payload;
       state.sidebarState = 0;
       state.activeSidebar = 'NONE';

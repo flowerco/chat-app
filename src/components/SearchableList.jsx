@@ -41,14 +41,12 @@ export default function SearchableList({ listType }) {
       dispatch(authAddContact(newChatOrContactId));
     }
     if (listType === 'CHATS') {
-      console.log(`Adding a chat between you (${currentUser._id}) and another user ${newChatOrContactId}`)   
       // 1. Add the chat ID to the database (just as an ID in the currentUser.chats list) 
       const newChatId = await addChat(currentUser._id, newChatOrContactId);
-      console.log('New chat created: ', newChatId);
       // 2. Add the chat to the state, so that it's visible on screen.
       dispatch(authAddChat({ currentUserId: currentUser._id, contactId: newChatOrContactId, chatId: newChatId }));
       // 3. Save the new chat to localStorage, so the messages can persist locally between sessions.
-      // Note: the useEffect in the bubbleList should do this, but it won't on first render, so let's save it here to be safe!
+      // Note: the useEffect in the bubbleList should do this, but it's designed not to save on first render, so let's save it here to be safe.
       saveState( newChatId, { userList: [currentUser._id, newChatOrContactId], bubbleList: [] })
     }
     dispatch(closeModal());

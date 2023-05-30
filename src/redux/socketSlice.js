@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { socket } from "../lib/socket";
 
 export const socketSlice = createSlice({
   name: 'socket',
@@ -11,11 +10,11 @@ export const socketSlice = createSlice({
   },
   reducers: {
     socketSetConnected: (state, action) => {
-      console.log('Updating the socket state in redux to isConnected = ', action.payload);
+      // console.log('Updating the socket state in redux to isConnected = ', action.payload);
       state.isConnected = action.payload;
     },
     socketSetContactConnected: (state, action) => {
-      console.log(`Contact has ${action.payload ? 'joined' : 'left'}, connected state = ${action.payload}`);
+      // console.log(`Contact has ${action.payload ? 'joined' : 'left'}, connected state = ${action.payload}`);
       state.contactConnected = action.payload;
     }
   }
