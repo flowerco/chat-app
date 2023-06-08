@@ -36,14 +36,11 @@ export default function AuthForm() {
     try {
       if (mode === 'register') {
         const data = await register(formState);
-        console.log(data);
         if (data) {
           dispatch(authLogin(data));
         }
       } else {
-        console.log('Verifying user...');
         const data = await login({ email: formState.email, password: formState.password} );
-        console.log('Data returned: ', data);
         if (data) {
           dispatch(authLogin(data));
         } else {

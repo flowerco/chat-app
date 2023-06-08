@@ -40,10 +40,10 @@ function BubbleList() {
 
   useEffect(() => {
     if (hasChatIdChanged) {
-      // console.log('Chat ID updated, so a new chat loaded, so don\'t save the state');
+      console.log('Chat ID updated, so a new chat loaded, so don\'t save the state');
       return;
     }
-    // console.log('Saving chat state in my new fancy useEffect');
+    console.log('Saving chat state in my new fancy useEffect');
     saveState(currentChatId, chatState);
   }, [hasChatIdChanged, currentChatId, chatState]);
 

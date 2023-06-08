@@ -20,10 +20,13 @@ export const authSlice = createSlice({
       state.currentUser = action.payload;
 
       const chatId = action.payload.currentChat;
+      console.log('Running authLogin with payload: ', action.payload);
       // If the user we just loaded has a currentChat to show onscreen, then pull that chat from localStorage.
       if (chatId) {
-        const savedChat = loadState(chatId, state.currentUser.keepTime || 0);
+        console.log('Searching localStorage for a chat with ID: ', chatId);
+        const savedChat = loadState(chatId, action.payload.keepTime || 0);
         if (savedChat) {
+          console.log('Saved chat loaded in the auth state: ', savedChat);
           state.currentChat = savedChat;
         }
       }
@@ -71,6 +74,10 @@ export const authSlice = createSlice({
       console.log(`Keep messages for ${action.payload} days`);
       state.currentUser.keepTime = action.payload;
     },
+    authUpdateSearchable: (state, action) => {
+      console.log(`Searchable by all users: ${action.payload}`);
+      state.currentUser.isSearchable = action.payload;
+    },
     chatInitialiseMessages: (state, action) => {
       const chat = action.payload;
       state.currentChat.userList = chat.userList;
@@ -98,6 +105,7 @@ export const {
   authUpdateCurrentChat,
   authUpdateKeepTime,
   authUpdateUserImage,
+  authUpdateSearchable,
   chatInitialiseMessages,
   chatAddMessage
 } = authSlice.actions;

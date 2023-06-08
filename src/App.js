@@ -34,6 +34,7 @@ function App() {
       // 2. If the jwt is verified, the user will be fetched.
       // Add this user to the app state and set authenticated to true
       if (user) {
+        console.log('User sent back from verifying login: ', user);
         dispatch(authLogin(user));
         setLoading(false);
       } else {

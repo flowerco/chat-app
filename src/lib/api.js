@@ -166,45 +166,6 @@ export const deleteChat = async (currentUserId, chatId) => {
   }
 };
 
-export const updateCurrentChat = async (currentUserId, chatId) => {
-  try {
-    const updatedCurrentChat = await fetcher({
-      url: 'http://localhost:3002/api/updateCurrentChat',
-      method: 'POST',
-      body: { currentUserId, chatId },
-    });
-    return updatedCurrentChat;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export const updateCurrentUserImage = async (currentUserId, newImg) => {
-  try {
-    const updatedCurrentUserImage = await fetcher({
-      url: 'http://localhost:3002/api/updateUserImage',
-      method:'POST',
-      body: {currentUserId, newImg}
-    })
-    return updatedCurrentUserImage;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-export const updateCurrentUserKeepTime = async (currentUserId, newKeepTime) => {
-  try {
-    const updatedKeepTime = await fetcher({
-      url: 'http://localhost:3002/api/updateKeepTime',
-      method:'POST',
-      body: {currentUserId, newKeepTime}
-    })
-    return updatedKeepTime;
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 export const updateCurrentUserProperty = async (currentUserId, propertyName, propertyValue) => {
   try {
     const apiString = 'http://localhost:3002/api/updateUserProperty';

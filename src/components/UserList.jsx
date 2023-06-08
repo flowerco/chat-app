@@ -141,6 +141,7 @@ const UserItem = ({ user, edit, type, callback }) => {
         className='h-full aspect-square object-cover rounded-full'
         src={user.userImg || BlankProfile}
         alt={`User ${user.firstName}`}
+        onError={(event) => (event.target.src = BlankProfile)}
       />
       <h2 className='h-full w-full ml-4 flex items-center text-xl border-b border-gray-400'>
         {capitaliseFirstLetter(user.firstName)}{' '}

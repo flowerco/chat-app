@@ -2,7 +2,7 @@ import BlankProfile from '../../assets/blank-profile.png';
 import { useState } from 'react';
 import UploadWidget from '../UploadWidget';
 import { useDispatch } from 'react-redux';
-import { authUpdateKeepTime } from '../../redux/authSlice';
+import { authUpdateKeepTime, authUpdateSearchable } from '../../redux/authSlice';
 import { updateCurrentUserProperty } from '../../lib/api';
 
 export default function Settings({ user }) {
@@ -13,17 +13,16 @@ export default function Settings({ user }) {
   // 4. TODO: Generate invite code?
 
   const [checkedOne, setCheckedOne] = useState(true);
-  const [checkedTwo, setCheckedTwo] = useState(true);
-  const [daysToKeep, setDaysToKeep] = useState(10);
-
+  
   const dispatch = useDispatch();
-
+  
   const handleClickOne = () => {
-    setCheckedOne(!checkedOne);
+    updateCurrentUserProperty(user._id, 'isSearchable', !user.isSearchable);
+    dispatch(authUpdateSearchable(!user.isSearchable));
   };
 
   const handleClickTwo = () => {
-    setCheckedTwo(!checkedTwo);
+    setCheckedOne(!checkedOne);
   };
 
   const handleChange = (event) => {
@@ -33,7 +32,12 @@ export default function Settings({ user }) {
     } else {
       value = '';
     }
-    dispatch();
+    updateCurrentUserProperty(
+      user._id,
+      'keepTime',
+      value
+    );
+    dispatch(authUpdateKeepTime(value))
   };
 
   const image = user.userImg || BlankProfile;
@@ -75,7 +79,7 @@ export default function Settings({ user }) {
             <input
               type='checkbox'
               className='h-8 w-8 accent-teal-500 text-red-400'
-              checked={checkedTwo}
+              checked={user.isSearchable}
               onChange={handleClickTwo}
             />
           </li>
@@ -84,14 +88,7 @@ export default function Settings({ user }) {
             <input
               type='number'
               value={user.keepTime}
-              onChange={(event) => {
-                updateCurrentUserProperty(
-                  user._id,
-                  'keepTime',
-                  event.target.value
-                );
-                dispatch(authUpdateKeepTime(event.target.value));
-              }}
+              onChange={handleChange}
               className='w-16 pl-2 rounded-sm'
             ></input>{' '}
             days.

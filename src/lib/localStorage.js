@@ -17,6 +17,7 @@ function hasDaysPassed(dateString, numberOfDays) {
 export const loadState = ( chatId, keepDays ) => {
   try {
     const encryptedState = localStorage.getItem(chatId);
+    console.log('Encrypted message list found: ', encryptedState);
     if (encryptedState === null) {
       return undefined;
     }
@@ -24,7 +25,9 @@ export const loadState = ( chatId, keepDays ) => {
     const messageState = JSON.parse(decryptedState);
     
     // Apply a filter to remove any old messages.
+    console.log('Keep days: ', keepDays);
     messageState.bubbleList = messageState.bubbleList.filter(bubble => !hasDaysPassed(bubble.timeStamp, keepDays))
+    console.log('Messages returned: ', messageState);
     return messageState;
   } catch {
     // The fallback is always to return undefined and let the Redux reducer load the state.
@@ -44,7 +47,6 @@ export const saveState = (chatId, state) => {
 
 export const deleteState = (chatId) => {
   try {
-    console.log(`Deleting chat ${chatId} from localStorage`);
     localStorage.removeItem(chatId);
   } catch (err) {
     console.log('Failed to delete chat');
