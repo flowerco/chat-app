@@ -55,7 +55,7 @@ function App() {
   };
 
   return (
-    <div className='h-full w-full'>
+    <div className='h-screen w-full'>
       {/* TODO: We need a single background upon which renders either the loader, 
       the login component or the app screen. */}
       {loading ? (
