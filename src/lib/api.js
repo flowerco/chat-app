@@ -1,8 +1,14 @@
 import { authLogout } from '../redux/authSlice';
 import store from '../redux/store';
 
+const rootUrl = process.env.REACT_APP_HOSTNAME
+  ? `${process.env.REACT_APP_HOSTNAME}`
+  : 'http://localhost:3002';
+
 export const fetcher = async ({ url, method, body, json = true }) => {
   const cookieFlag = !['/register', '/login'].includes(url);
+
+  console.log(`Sending fetch request to ${url} with cookie flag ${cookieFlag}`);
 
   const res = await fetch(url, {
     method,
@@ -18,7 +24,7 @@ export const fetcher = async ({ url, method, body, json = true }) => {
     console.log('Fetch request failed with status ', res.status);
     if ([401, 403].includes(res.status)) {
       // If any request is no longer authorised then the cookie has expired and
-      // the user should be logged out.  
+      // the user should be logged out.
       store.dispatch(authLogout());
     } else {
       // Handle any other errors
@@ -28,13 +34,14 @@ export const fetcher = async ({ url, method, body, json = true }) => {
 
   if (json) {
     const data = await res.json();
+    console.log('Data returned from fetch request: ', data);
     return data;
   }
 };
 
 export const register = (user) => {
   return fetcher({
-    url: 'http://localhost:3002/register',
+    url: `${rootUrl}/register`,
     method: 'POST',
     body: user,
   });
@@ -43,7 +50,7 @@ export const register = (user) => {
 export const verifyLogin = async () => {
   try {
     const verifiedUser = await fetcher({
-      url: 'http://localhost:3002/verifyLogin',
+      url: `${rootUrl}/verifyLogin`,
       method: 'GET',
     });
     return verifiedUser;
@@ -58,7 +65,7 @@ export const verifyLogin = async () => {
 export const login = async (user) => {
   try {
     const fetchedData = await fetcher({
-      url: 'http://localhost:3002/login',
+      url: `${rootUrl}/login`,
       method: 'POST',
       body: { email: user.email, password: user.password },
     });
@@ -70,7 +77,7 @@ export const login = async (user) => {
 
 export const logout = () => {
   fetcher({
-    url: 'http://localhost:3002/logout',
+    url: `${rootUrl}/logout`,
     method: 'GET',
   });
 };
@@ -78,7 +85,7 @@ export const logout = () => {
 export const search = async (contactsArray, searchString) => {
   try {
     const fetchedUsers = await fetcher({
-      url: 'http://localhost:3002/api/searchUsers',
+      url: `${rootUrl}/api/searchUsers`,
       method: 'POST',
       body: { contactsArray, searchString },
     });
@@ -91,7 +98,7 @@ export const search = async (contactsArray, searchString) => {
 export const addContact = async (currentUserId, newContactId) => {
   try {
     const addedContact = await fetcher({
-      url: 'http://localhost:3002/api/addContact',
+      url: `${rootUrl}/api/addContact`,
       method: 'POST',
       body: { currentUserId, newContactId },
     });
@@ -104,7 +111,7 @@ export const addContact = async (currentUserId, newContactId) => {
 export const deleteContact = async (currentUserId, contactId) => {
   try {
     const updatedUser = await fetcher({
-      url: 'http://localhost:3002/api/deleteContact',
+      url: `${rootUrl}/api/deleteContact`,
       method: 'POST',
       body: { currentUserId, contactId },
     });
@@ -117,7 +124,7 @@ export const deleteContact = async (currentUserId, contactId) => {
 export const fetchContacts = async (userId) => {
   try {
     const contactList = await fetcher({
-      url: 'http://localhost:3002/api/fetchContacts',
+      url: `${rootUrl}/api/fetchContacts`,
       method: 'POST',
       body: { userId },
     });
@@ -130,7 +137,7 @@ export const fetchContacts = async (userId) => {
 export const fetchChats = async (userId) => {
   try {
     const contactList = await fetcher({
-      url: 'http://localhost:3002/api/fetchChats',
+      url: `${rootUrl}/api/fetchChats`,
       method: 'POST',
       body: { userId },
     });
@@ -143,7 +150,7 @@ export const fetchChats = async (userId) => {
 export const addChat = async (currentUserId, contactId) => {
   try {
     const addedChat = await fetcher({
-      url: 'http://localhost:3002/api/addChat',
+      url: `${rootUrl}/api/addChat`,
       method: 'POST',
       body: { currentUserId, contactId },
     });
@@ -156,7 +163,7 @@ export const addChat = async (currentUserId, contactId) => {
 export const deleteChat = async (currentUserId, chatId) => {
   try {
     const updatedUser = await fetcher({
-      url: 'http://localhost:3002/api/deleteChat',
+      url: `${rootUrl}/api/deleteChat`,
       method: 'POST',
       body: { currentUserId, chatId },
     });
@@ -166,24 +173,28 @@ export const deleteChat = async (currentUserId, chatId) => {
   }
 };
 
-export const updateCurrentUserProperty = async (currentUserId, propertyName, propertyValue) => {
+export const updateCurrentUserProperty = async (
+  currentUserId,
+  propertyName,
+  propertyValue
+) => {
   try {
-    const apiString = 'http://localhost:3002/api/updateUserProperty';
+    const apiString = `${rootUrl}/api/updateUserProperty`;
     const updatedProperty = await fetcher({
       url: apiString,
       method: 'POST',
-      body: {currentUserId, propertyName, propertyValue}
+      body: { currentUserId, propertyName, propertyValue },
     });
     return updatedProperty;
   } catch (err) {
     console.log(err);
   }
-}
+};
 
 export const fetchChatForContact = async (currentUserId, contactId) => {
   try {
     const contactChatId = await fetcher({
-      url: 'http://localhost:3002/api/fetchChatForContact',
+      url: `${rootUrl}/api/fetchChatForContact`,
       method: 'POST',
       body: { currentUserId, contactId },
     });
@@ -191,12 +202,12 @@ export const fetchChatForContact = async (currentUserId, contactId) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 export const fetchChatById = async (userId, chatId) => {
   try {
     const chat = await fetcher({
-      url: 'http://localhost:3002/api/fetchChatById',
+      url: `${rootUrl}/api/fetchChatById`,
       method: 'POST',
       body: { userId, chatId },
     });
@@ -204,4 +215,4 @@ export const fetchChatById = async (userId, chatId) => {
   } catch (error) {
     console.log(error);
   }
-}
+};

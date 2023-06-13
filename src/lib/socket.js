@@ -4,7 +4,7 @@ import { socketSetConnected } from '../redux/socketSlice';
 import { chatAddMessage } from '../redux/authSlice';
 
 // "undefined" means the URL will be computed from the `window.location` object
-const URL = process.env.REACT_SOCKET_URL || 'http://localhost:3002';
+const URL = process.env.REACT_APP_HOSTNAME || 'http://localhost:3002';
 
 export const socket = io(URL, {
   autoConnect: false

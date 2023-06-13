@@ -30,6 +30,8 @@ function App() {
     // 1. Verify the jwt - note we don't check for the cookie first, since the cookie is httpOnly and
     // can't be viewed by the front-end code.
     async function verify() {
+      // TODO: Need a timeout here in case the api can't connect to the server.
+      // Otherwise we get stuck loading.
       const user = await verifyLogin();
       // 2. If the jwt is verified, the user will be fetched.
       // Add this user to the app state and set authenticated to true
