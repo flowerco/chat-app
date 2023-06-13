@@ -49,7 +49,7 @@ function BubbleList() {
 
 
   return (
-    <div className='w-full h-full max-w-5xl mb-24 pt-4 px-4 overflow-y-scroll'>
+    <div className='w-full h-full max-w-5xl mb-20 sm:mb-24 pt-4 px-4 overflow-y-scroll'>
       <div className='w-full h-full flex flex-col gap-2'>
         {chatState.bubbleList.length > 0
           ? chatState.bubbleList.map((chat, index) => (

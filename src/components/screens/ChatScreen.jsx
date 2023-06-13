@@ -63,8 +63,8 @@ function TitleBar ({ contact }) {
   const authState = useSelector(state => state.auth);
 
   return (
-    <div className='w-full h-40 sm:h-20 flex flex-col sm:flex-row justify-between items-center sm:px-4 bg-primary text-white'>
-    <div className='flex flex-col'>
+    <div className='w-full h-20 flex flex-col sm:flex-row justify-between items-center sm:px-4 bg-primary text-white'>
+    <div className='hidden sm:flex flex-col'>
       <p className='h-20 flex justify-center items-center'>
         <span className='text-yellow-400 font-semibold text-4xl mr-4'>
           Freechat
