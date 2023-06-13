@@ -13,8 +13,8 @@ export default function Modal({ type }) {
   }
 
   return (
-    <div className="w-full h-full flex justify-center items-center">
-      <div className="w-5/12 h-96 bg-slate-200 rounded-3xl flex flex-col justify-around items-center shadow-xl z-20" >
+    <div className="w-full p-2 sm:p-0 h-full flex justify-end sm:justify-center items-center">
+      <div className="z-40 w-full sm:w-5/12 h-96 bg-slate-200 rounded-3xl flex flex-col justify-around items-center shadow-xl" >
         <SearchableList listType={type}/>
         <div className="w-full flex justify-end pr-4 my-4">
           <button className='bg-blue-600 text-white font-semibold px-4 py-2 rounded-md' onClick={handleClick}>

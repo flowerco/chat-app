@@ -89,7 +89,7 @@ export default function Sidebar({ number }) {
 
   return (
     <div
-      className={`z-20 w-80 h-full fixed top-0 left-16
+      className={`z-20 w-[calc(100%-4rem)] sm:w-80 h-full fixed top-0 left-16
     flex flex-col justify-center items-center
     transition-transform duration-200 ease-linear
     ${type.bgColor} ${type.textColor}
