@@ -5,6 +5,7 @@ import Settings from './Settings';
 import SidebarList from './SidebarList';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../redux/screenSlice';
+import { ClipLoader } from 'react-spinners';
 
 const sidebarTypes = {
   NONE: {
@@ -28,18 +29,18 @@ const sidebarTypes = {
 };
 
 export default function Sidebar({ number }) {
-
-  const screenState = useSelector(state => state.screen);
+  const screenState = useSelector((state) => state.screen);
   const dispatch = useDispatch();
 
   const showSidebar = screenState.sidebarState === number;
   const typeName = screenState.sidebarType[number - 1];
   const type = sidebarTypes[typeName];
 
-  const authState = useSelector(state => state.auth);
+  const authState = useSelector((state) => state.auth);
 
   // Use a single generic list rather than defining both contact/chat lists.
   const [userList, setUserList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // The screenstate holds a list of contact or chat IDs, but we need to pull the additional data for them here.
   useEffect(() => {
@@ -69,7 +70,6 @@ export default function Sidebar({ number }) {
 
         listData = Array.from(listSet);
       }
-
       return listData;
     };
 
@@ -78,6 +78,7 @@ export default function Sidebar({ number }) {
       fetchData(typeName).then((data) => {
         // console.log('Data returned: ', data);
         setUserList(data);
+        setIsLoading(false);
       });
     }
   }, [authState.currentUser, typeName]);
@@ -103,6 +104,8 @@ export default function Sidebar({ number }) {
         )}
         {typeName === 'SETTINGS' ? (
           <Settings user={authState.currentUser} />
+        ) : isLoading ? (
+          <ClipLoader />
         ) : (
           <SidebarList userList={userList} typeName={typeName} />
         )}
