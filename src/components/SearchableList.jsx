@@ -9,16 +9,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { authAddChat, authAddContact } from '../redux/authSlice';
 import { closeModal } from '../redux/screenSlice';
 import { saveState } from '../lib/localStorage';
+import { ClipLoader } from 'react-spinners';
 
 export default function SearchableList({ listType }) {
   
   const [itemList, setItemList] = useState([]);
   const [searchString, setSearchString] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const authState = useSelector(state => state.auth);
   const dispatch = useDispatch();
 
   const handleChange = async (event) => {
+    setIsLoading(true);
     setSearchString(event.target.value);
     const searchList = listType.toLowerCase();
     const searchResult = await search(
@@ -30,6 +33,7 @@ export default function SearchableList({ listType }) {
     } else {
       setItemList(searchResult);
     }
+    setIsLoading(false);
   };
 
   const handleClick = async (event) => {
@@ -68,7 +72,9 @@ export default function SearchableList({ listType }) {
         </button>
       </div>
       <div className='w-full grow mt-4 flex justify-center items-center'>
-        {itemList.length > 0 ? (
+        { isLoading ? <ClipLoader /> :
+        
+        (itemList.length > 0 ? (
           <ul className='h-full w-full overflow-scroll flex flex-col justify-start items-center px-6 gap-2'>
             {itemList.map((item) => {
               return (
@@ -78,7 +84,7 @@ export default function SearchableList({ listType }) {
           </ul>
         ) : (
           <FcSearch size='150' />
-        )}
+        ))}
       </div>
     </div>
   );
