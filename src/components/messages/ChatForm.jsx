@@ -65,7 +65,7 @@ export default function ChatForm({ userId, chatId }) {
       <button
         type='submit'
         disabled={isLoading}
-        className='bg-accent text-primary h-8 w-1/4 max-w-[8rem] rounded-md font-semibold text-md sm:text-lg'
+        className='bg-accent text-primary h-16 sm:h-8 aspect-square sm:aspect-auto sm:w-1/4 max-w-[8rem] rounded-full sm:rounded-md font-semibold text-md sm:text-lg'
       >
         Send
       </button>
