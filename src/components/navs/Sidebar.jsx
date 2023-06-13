@@ -12,8 +12,8 @@ const sidebarTypes = {
     topNavText: 'Somethings gone wrong if you can see me...',
   },
   CHATS: {
-    bgColor: 'bg-secondary',
-    textColor: 'text-white',
+    bgColor: 'bg-teal-500',
+    textColor: 'text-black',
     topNavText: 'New Chat',
   },
   CONTACTS: {
@@ -21,7 +21,8 @@ const sidebarTypes = {
     topNavText: 'Add Contact',
   },
   SETTINGS: {
-    bgColor: 'bg-blue-500',
+    bgColor: 'bg-blue-700',
+    textColor: 'text-white',
     topNavText: '',
   },
 };
@@ -113,8 +114,8 @@ export default function Sidebar({ number }) {
 const SidebarTopNav = ({ topNavText, clickCallback }) => {
   return (
     <div className='w-full h-[80px] flex justify-end items-center bg-gray-900'>
-      <span className='text-green-500 text-xl pr-4'>{topNavText}</span>
-      <button onClick={clickCallback} className='text-green-500 pr-8'>
+      <span className='text-accent text-xl pr-4'>{topNavText}</span>
+      <button onClick={clickCallback} className='text-accent pr-8'>
         <BsPlusCircle size='32' />
       </button>
     </div>

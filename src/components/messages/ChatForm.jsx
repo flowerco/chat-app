@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { socket } from '../../lib/socket';
-import ClipLoader from 'react-spinners/ClipLoader';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { chatAddMessage } from '../../redux/authSlice';
-import { saveState } from '../../lib/localStorage';
 
 export default function ChatForm({ userId, chatId }) {
   const [formState, setFormState] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
-  const authState = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const handleChange = (event) => {
@@ -24,20 +21,6 @@ export default function ChatForm({ userId, chatId }) {
   };
 
   const updateChatState = (message) => {
-    // 3. Save the new state to eg. localStorage, ideally with some encryption...
-    // Should this be in a callback from the dispatch? Ideally would just use the new state instead of redefining
-    // the state here to save it...
-    // saveState(chatId, {
-    //   userList: authState.currentChat.userList,
-    //   bubbleList: [
-    //     ...authState.currentChat.bubbleList,
-    //     {
-    //       _id: userId,
-    //       timeStamp: new Date(Date.now()).toISOString(),
-    //       text: message,
-    //     },
-    //   ],
-    // });
     // 1. Update the state as it appears on the screen.
     dispatch(chatAddMessage({ senderId: userId, message }));
     // 2. Send to the contact via websocket, ideally with some encryption...
@@ -82,7 +65,7 @@ export default function ChatForm({ userId, chatId }) {
       <button
         type='submit'
         disabled={isLoading}
-        className='bg-blue-500 h-8 w-1/4 max-w-[8rem] rounded-md font-semibold text-lg text-white'
+        className='bg-accent text-primary h-8 w-1/4 max-w-[8rem] rounded-md font-semibold text-lg'
       >
         Send
       </button>

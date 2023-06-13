@@ -59,7 +59,7 @@ export default function Settings({ user }) {
             />
           </div>
           <div className='flex flex-col flex-grow text-center'>
-            <h1 className='text-3xl text-white'>
+            <h1 className='text-3xl'>
               {user.firstName} {user.lastName}
             </h1>
           </div>
@@ -89,7 +89,7 @@ export default function Settings({ user }) {
               type='number'
               value={user.keepTime}
               onChange={handleChange}
-              className='w-16 pl-2 rounded-sm'
+              className='w-16 pl-2 rounded-sm text-black'
             ></input>{' '}
             days.
           </li>
