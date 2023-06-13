@@ -5,7 +5,6 @@ import Settings from './Settings';
 import SidebarList from './SidebarList';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal } from '../../redux/screenSlice';
-import { ClipLoader } from 'react-spinners';
 
 const sidebarTypes = {
   NONE: {
@@ -30,17 +29,17 @@ const sidebarTypes = {
 
 export default function Sidebar({ number }) {
   const screenState = useSelector((state) => state.screen);
+  const authState = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
+  // Identify the type of sidebar to display based on the number in the screen state.
   const showSidebar = screenState.sidebarState === number;
   const typeName = screenState.sidebarType[number - 1];
   const type = sidebarTypes[typeName];
 
-  const authState = useSelector((state) => state.auth);
-
   // Use a single generic list rather than defining both contact/chat lists.
   const [userList, setUserList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   // The screenstate holds a list of contact or chat IDs, but we need to pull the additional data for them here.
   useEffect(() => {
@@ -75,6 +74,7 @@ export default function Sidebar({ number }) {
 
     // If the user has been loaded into the auth state, then we are safe to call the fetch method for that user.
     if (authState.currentUser._id) {
+      setIsLoading(true);
       fetchData(typeName).then((data) => {
         // console.log('Data returned: ', data);
         setUserList(data);
@@ -104,10 +104,8 @@ export default function Sidebar({ number }) {
         )}
         {typeName === 'SETTINGS' ? (
           <Settings user={authState.currentUser} />
-        ) : isLoading ? (
-          <ClipLoader />
         ) : (
-          <SidebarList userList={userList} typeName={typeName} />
+          <SidebarList loading={isLoading} userList={userList} typeName={typeName} />
         )}
       </div>
     </div>
