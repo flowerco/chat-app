@@ -56,14 +56,14 @@ export default function AuthForm() {
     <Card>
       <div className='w-full'>
         <div className='text-center'>
-          <h2 className='text-3xl mb-2'>{content.header}</h2>
-          <p className='tex-lg text-black/25'>{content.subheader}</p>
+          <h2 className='text-2xl sm:text-3xl mb-2'>{content.header}</h2>
+          <p className='text-sm sm:text-md text-black/25'>{content.subheader}</p>
         </div>
         <form onSubmit={handleSubmit} className='py-10 w-full'>
           {mode === 'register' && (
             <div className='flex mb-8 justify-between'>
               <div className='pr-2'>
-                <div className='text-lg mb-4 ml-2 text-black/50'>
+                <div className='text-sm sm:text-lg mb-4 ml-2 text-black/50'>
                   First Name
                 </div>
                 <Input
@@ -71,20 +71,20 @@ export default function AuthForm() {
                   placeholder='First Name'
                   value={formState.firstName}
                   autoComplete='given-name'
-                  className='border-solid border-gray border-2 px-6 py-2 text-lg rounded-3xl w-full'
+                  className='border-solid border-gray border-2 px-6 py-2 text-sm sm:text-lg rounded-3xl w-full'
                   onChange={(e) =>
                     setFormState((s) => ({ ...s, firstName: e.target.value }))
                   }
                 />
               </div>
               <div className='pl-2'>
-                <div className='text-lg mb-4 ml-2 text-black/50'>Last Name</div>
+                <div className='text-sm sm:text-lg mb-4 ml-2 text-black/50'>Last Name</div>
                 <Input
                   required
                   placeholder='Last Name'
                   value={formState.lastName}
                   autoComplete='family-name'
-                  className='border-solid border-gray border-2 px-6 py-2 text-lg rounded-3xl w-full'
+                  className='border-solid border-gray border-2 px-6 py-2 text-sm sm:text-lg rounded-3xl w-full'
                   onChange={(e) =>
                     setFormState((s) => ({ ...s, lastName: e.target.value }))
                   }
@@ -93,7 +93,7 @@ export default function AuthForm() {
             </div>
           )}
           <div className='mb-8'>
-            <div className='text-lg mb-4 ml-2 text-black/50'>Email</div>
+            <div className='text-sm sm:text-lg mb-4 ml-2 text-black/50'>Email</div>
             <Input
               autoFocus
               required
@@ -101,27 +101,27 @@ export default function AuthForm() {
               placeholder='Email'
               value={formState.email}
               autoComplete='email'
-              className='border-solid border-gray border-2 px-6 py-2 text-lg rounded-3xl w-full'
+              className='border-solid border-gray border-2 px-6 py-2 text-sm sm:text-lg rounded-3xl w-full'
               onChange={(e) =>
                 setFormState((s) => ({ ...s, email: e.target.value }))
               }
             />
           </div>
           <div className='mb-8'>
-            <div className='text-lg mb-4 ml-2 text-black/50'>Password</div>
+            <div className='text-sm sm:text-lg mb-4 ml-2 text-black/50'>Password</div>
             <Input
               required
               value={formState.password}
               type='password'
               placeholder='Password'
               autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
-              className='border-solid border-gray border-2 px-6 py-2 text-lg rounded-3xl w-full'
+              className='border-solid border-gray border-2 px-6 py-2 text-sm sm:text-lg rounded-3xl w-full'
               onChange={(e) =>
                 setFormState((s) => ({ ...s, password: e.target.value }))
               }
             />
           </div>
-          <div className='flex items-center justify-between'>
+          <div className='flex items-center justify-between text-sm sm:text-base'>
             <div>
               <span
                 className='text-blue-700 underline cursor-pointer'
@@ -134,7 +134,7 @@ export default function AuthForm() {
             </div>
             <div>
               <button
-                className='rounded-3xl font-bold hover:scale-110 active:scale-100 transition duration-200 ease-in-out bg-violet-500 text-white border-transparent hover:bg-violet-600 text-lg px-6 py-2'
+                className='rounded-3xl font-bold hover:scale-110 active:scale-100 transition duration-200 ease-in-out bg-violet-500 text-white border-transparent hover:bg-violet-600 text-sm sm:text-lg px-6 py-2'
                 type='submit'
                 intent='secondary'
               >
