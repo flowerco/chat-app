@@ -48,8 +48,6 @@ export default function Settings({ user }) {
         <div className='flex justify-between items-center'>
           <div className='image relative inline-block'>
             <div className='overlay absolute bottom-0 right-0 z-30 translate-x-3'>
-              {/* TODO: Need a backup if we're offline, otherwise this will just crash... 
-               Is there a built in solution from Cloudinary? */}
               <UploadWidget />
             </div>
             <img

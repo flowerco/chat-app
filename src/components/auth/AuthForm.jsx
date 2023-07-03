@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 import { authLogin } from '../../redux/authSlice';
 import Card from './Card';
 import Input from './Input';
+import { reduxFetchContacts } from '../../redux/contactsSlice';
+import { reduxFetchChats } from '../../redux/chatsSlice';
 
 const registerContent = {
   linkUrl: '/signin',
@@ -16,7 +18,7 @@ const registerContent = {
 const signinContent = {
   linkUrl: '/register',
   linkText: "Don't have an account?",
-  header: 'Welcome Back',
+  header: 'Welcome to FreeChat',
   subheader: 'Enter your credentials to access your account',
   buttonText: 'Sign In',
 };
@@ -43,6 +45,8 @@ export default function AuthForm() {
         const data = await login({ email: formState.email, password: formState.password} );
         if (data) {
           dispatch(authLogin(data));
+          dispatch(reduxFetchContacts(data._id));
+          dispatch(reduxFetchChats(data._id));
         } else {
           // TODO: Handle redirect if login failed
         }

@@ -1,5 +1,5 @@
 import './App.css';
-import { createContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import MainScreen from './components/screens/MainScreen';
 import AuthScreen from './components/screens/AuthScreen';
 import ClipLoader from 'react-spinners/ClipLoader';
@@ -7,8 +7,10 @@ import { verifyLogin } from './lib/api';
 import { createSocketListeners, removeSocketListeners } from './lib/socket';
 import { useDispatch, useSelector } from 'react-redux';
 import { authLogin, authLogout } from './redux/authSlice';
+import CookieConsent from 'react-cookie-consent';
+import { reduxFetchContacts } from './redux/contactsSlice';
+import { reduxFetchChats } from './redux/chatsSlice';
 
-export const ScreenContext = createContext();
 
 function App() {
   const authState = useSelector((state) => state.auth);
@@ -38,6 +40,9 @@ function App() {
       if (user) {
         console.log('User sent back from verifying login: ', user);
         dispatch(authLogin(user));
+        // Fetch the contacts and chats for the newly logged in user:
+        dispatch(reduxFetchContacts(user._id));
+        dispatch(reduxFetchChats(user._id));
         setLoading(false);
       } else {
         // 3. Otherwise, stop the loading spinner and the login page will show.
@@ -56,7 +61,8 @@ function App() {
 
   return (
     <div className='h-screen w-full'>
-      {/* TODO: We need a single background upon which renders either the loader, 
+      {/* <CookieConsent cookieName='__freechat_app_v2GsUUj3Pk__' location='top' overlay>Hey, can we offer you a cookie? 🍪</CookieConsent> */}
+      {/* TODO: Ideally we would have a single background upon which renders either the loader, 
       the login component or the app screen. */}
       {loading ? (
         <div className='h-full w-full flex justify-center items-center bg-teal-500'>

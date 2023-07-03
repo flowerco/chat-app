@@ -59,6 +59,9 @@ export const authSlice = createSlice({
     },
     authDeleteChat: (state, action) => {
       state.currentUser.chats = state.currentUser.chats.filter(chatId => chatId !== action.payload);
+      
+      // TODO: This doesn't seem right. We may not be deleting the current chat
+      // but this will always remove the current chat. Oops.
       state.currentUser.currentChat = '';
       state.currentChat = emptyChat;
     },

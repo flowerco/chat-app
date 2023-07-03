@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BsPlusCircle } from 'react-icons/bs';
-import { fetchContacts, fetchChats } from '../../lib/api';
 import Settings from './Settings';
 import SidebarList from './SidebarList';
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,51 +36,9 @@ export default function Sidebar({ number }) {
   const typeName = screenState.sidebarType[number - 1];
   const type = sidebarTypes[typeName];
 
-  // Use a single generic list rather than defining both contact/chat lists.
-  const [userList, setUserList] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
 
-  // The screenstate holds a list of contact or chat IDs, but we need to pull the additional data for them here.
-  useEffect(() => {
-    const fetchData = async (typeName) => {
-      let listData = [];
-      if (typeName === 'CONTACTS') {
-        listData = await fetchContacts(authState.currentUser._id);
-        // We need a unique key field to populate the list correctly,
-        // but it will be different for contacts and chats:
-        listData = listData.map((contact) => ({
-          ...contact,
-          unqKey: contact._id,
-        }));
-      } else if (typeName === 'CHATS') {
-        const chatList = await fetchChats(authState.currentUser._id);
-        // Chats include an ID and a userList, so combine the userLists and filter based on ID
-        const listSet = chatList.reduce((agg, chat) => {
-          const newUsers = chat.userList;
-          newUsers.forEach((user) => {
-            user.unqKey = chat._id;
-            if (!agg.includes(user._id)) {
-              agg.push(user);
-            }
-          });
-          return agg;
-        }, []);
-
-        listData = Array.from(listSet);
-      }
-      return listData;
-    };
-
-    // If the user has been loaded into the auth state, then we are safe to call the fetch method for that user.
-    if (authState.currentUser._id) {
-      setIsLoading(true);
-      fetchData(typeName).then((data) => {
-        // console.log('Data returned: ', data);
-        setUserList(data);
-        setIsLoading(false);
-      });
-    }
-  }, [authState.currentUser, typeName]);
 
   const handleAddClick = (event) => {
     dispatch(openModal(typeName));
@@ -105,7 +62,7 @@ export default function Sidebar({ number }) {
         {typeName === 'SETTINGS' ? (
           <Settings user={authState.currentUser} />
         ) : (
-          <SidebarList loading={isLoading} userList={userList} typeName={typeName} />
+          <SidebarList loading={isLoading} typeName={typeName} />
         )}
       </div>
     </div>

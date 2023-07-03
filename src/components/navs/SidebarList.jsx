@@ -2,12 +2,19 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setEditMode } from '../../redux/screenSlice';
 import SearchBar from '../SearchBar';
-import UserList from '../UserList';
 import { ClipLoader } from 'react-spinners';
+import ContactsList from '../ContactsList';
+import ChatList from '../ChatList';
 
-export default function SidebarList({ loading, userList, typeName }) {
+export default function SidebarList({ loading, typeName }) {
   const screenState = useSelector((state) => state.screen);
   const dispatch = useDispatch();
+
+  // To know whether to display an 'Edit' button, we need to know if
+  // there is anything in the list
+  const listState = useSelector((state) =>
+    typeName === 'CONTACTS' ? state.contacts.contacts : state.chats.chats
+  );
 
   const [searchString, setSearchString] = useState('');
 
@@ -16,41 +23,33 @@ export default function SidebarList({ loading, userList, typeName }) {
   };
 
   const handleSearch = (string) => {
-    // TODO: This should probably set a userListState, based on filtering an input userList, or something like that.
-    // Having the filter in every rerender of the UserList isn't ideal, we could just run it on search here.
     setSearchString(string.toLowerCase());
   };
 
   return (
     <div className='h-full w-full flex flex-col'>
       <SearchBar type={typeName} callback={handleSearch} />
+      {/* TODO: How to check loading if the state is picked up from Redux?
+      Can we access the status of the thunk that fetches the data? */}
       {loading ? (
         <ClipLoader size={32} color={'rgb(250 204 21)'} className='mx-auto' />
       ) : (
         <div className='w-full'>
-          {userList.length > 0 ? (
-            <UserList
-              users={userList.filter((user) =>
-                searchString
-                  ? [user.firstName, user.lastName]
-                      .join(' ')
-                      .toLowerCase()
-                      .includes(searchString)
-                  : true
-              )}
-              edit={screenState.editMode}
-              type={typeName}
-            />
+          {typeName === 'CONTACTS' ? (
+            <ContactsList searchString={searchString} />
           ) : (
-            <p className='text-center'>
-              No {typeName.toLowerCase()} here yet, let's add some!
-            </p>
+            <ChatList searchString={searchString} />
           )}
         </div>
       )}
       {!loading && (
         <div className='flex justify-end p-4'>
-          {userList.length > 0 && (
+          {
+            // TODO: Need to hide the edit button when there are no chats/contacts,
+            // but that will require access to both states...
+            // Should the button be added to the chatList and contactList instead?
+          }
+          {listState.length > 0 && (
             <button
               onClick={toggleEdit}
               className={`rounded-md py-2 px-8 font-bold text-white ${
