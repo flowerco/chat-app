@@ -1,7 +1,9 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { isEqual, remove } from 'lodash';
-import { fetchChats } from "../lib/api";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { fetchChats } from '../lib/api';
 
+// Note the chat messages are stored locally and only loaded into the local state of the
+// messageList component. A chat in the Redux state has the following format.
+// TODO: This is where Typescript would be awesome!
 // type Chat = {
 //   _id: ID,
 //   userList: [ID],
@@ -9,9 +11,9 @@ import { fetchChats } from "../lib/api";
 
 const initialState = {
   chats: [],
-  status:'idle',
-  error: null
-}
+  status: 'idle',
+  error: null,
+};
 
 export const chatsSlice = createSlice({
   name: 'chats',
@@ -28,12 +30,11 @@ export const chatsSlice = createSlice({
     },
     reduxRemoveChat: (state, action) => {
       const chatId = action.payload;
-      state = remove(state.chats, function(chat) {
-        return chat._id === chatId;
-      });
-    }
-  }, 
-  // The following extra reducers allow the state to be set depending on the 
+      const newChats = state.chats.filter((chat) => chat._id !== chatId);
+      state.chats = newChats;
+    },
+  },
+  // The following extra reducers allow the state to be set depending on the
   // current status of the thunk as it runs asynchronously.
   extraReducers(builder) {
     builder
@@ -47,22 +48,22 @@ export const chatsSlice = createSlice({
       .addCase(reduxFetchChats.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
-      })
-  }
+      });
+  },
 });
 
-export const {
-  reduxLoadChats,
-  reduxAddChat,
-  reduxRemoveChat
-} = chatsSlice.actions;
+export const { reduxLoadChats, reduxAddChat, reduxRemoveChat } =
+  chatsSlice.actions;
 
 export default chatsSlice.reducer;
 
 // Asynchronous thunk to fetch the initial contacts data from the db.
 // Note: we don't use a try/catch here since the error handling is done in the extra reducers.
 
-export const reduxFetchChats = createAsyncThunk('chats/loadChats', async (userId) => {
-  const response = await fetchChats(userId);
-  return response;
-});
+export const reduxFetchChats = createAsyncThunk(
+  'chats/loadChats',
+  async (userId) => {
+    const response = await fetchChats(userId);
+    return response;
+  }
+);

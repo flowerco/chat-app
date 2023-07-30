@@ -7,10 +7,8 @@ import { verifyLogin } from './lib/api';
 import { createSocketListeners, removeSocketListeners } from './lib/socket';
 import { useDispatch, useSelector } from 'react-redux';
 import { authLogin, authLogout } from './redux/authSlice';
-import CookieConsent from 'react-cookie-consent';
 import { reduxFetchContacts } from './redux/contactsSlice';
 import { reduxFetchChats } from './redux/chatsSlice';
-
 
 function App() {
   const authState = useSelector((state) => state.auth);
@@ -38,7 +36,7 @@ function App() {
       // 2. If the jwt is verified, the user will be fetched.
       // Add this user to the app state and set authenticated to true
       if (user) {
-        console.log('User sent back from verifying login: ', user);
+        // console.log('User sent back from verifying login: ', user);
         dispatch(authLogin(user));
         // Fetch the contacts and chats for the newly logged in user:
         dispatch(reduxFetchContacts(user._id));
@@ -56,17 +54,19 @@ function App() {
   }, []);
 
   const override = {
-    border: '8px solid'
+    border: '8px solid',
   };
 
   return (
-    <div className='h-screen w-full'>
-      {/* <CookieConsent cookieName='__freechat_app_v2GsUUj3Pk__' location='top' overlay>Hey, can we offer you a cookie? 🍪</CookieConsent> */}
-      {/* TODO: Ideally we would have a single background upon which renders either the loader, 
-      the login component or the app screen. */}
+    <div data-testid='app-screen' className='h-screen w-full'>
       {loading ? (
         <div className='h-full w-full flex justify-center items-center bg-teal-500'>
-          <ClipLoader size={120} color={'#5865f2'} cssOverride={override}/>
+          <ClipLoader
+            data-testid='loading-spinner'
+            size={120}
+            color={'#5865f2'}
+            cssOverride={override}
+          />
         </div>
       ) : authState.isAuthenticated ? (
         <MainScreen />

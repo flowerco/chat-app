@@ -8,7 +8,7 @@ import { BsChatLeftDots } from 'react-icons/bs';
 import {
   createNewChat,
   deleteContactFromList,
-  loadExistingChat
+  loadExistingChat,
 } from '../lib/chatUtils';
 
 export default function ContactsList({ searchString }) {
@@ -26,7 +26,7 @@ export default function ContactsList({ searchString }) {
       : true;
   });
 
-  const handleClick = async (event, contact) => {
+  const handleClick = async (contact) => {
     // Either go to start the chat with this user, or delete the user.
     if (screenState.editMode) {
       // Edit mode on, so delete the contact
@@ -53,7 +53,7 @@ export default function ContactsList({ searchString }) {
         console.log('It exists already, load it from local storage');
         loadExistingChat(authState, chatId, contact, dispatch);
       } else {
-        console.log('It doesn\'t exist, create a new chat');
+        console.log("It doesn't exist, create a new chat");
         createNewChat(authState.currentUser._id, contact, dispatch);
       }
 
@@ -70,7 +70,7 @@ export default function ContactsList({ searchString }) {
               key={contact._id}
               contact={contact}
               edit={screenState.editMode}
-              callback={handleClick}
+              callback={() => handleClick(contact)}
             />
           );
         })

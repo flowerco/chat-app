@@ -4,15 +4,15 @@ import { removeArrayItem } from '../lib/utils';
 
 const emptyChat = {
   userList: [],
-  bubbleList: []  
-}
+  bubbleList: [],
+};
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState: {
     isAuthenticated: false,
     currentUser: {},
-    currentChat: emptyChat
+    currentChat: emptyChat,
   },
   reducers: {
     authLogin: (state, action) => {
@@ -20,13 +20,13 @@ export const authSlice = createSlice({
       state.currentUser = action.payload;
 
       const chatId = action.payload.currentChat;
-      console.log('Running authLogin with payload: ', action.payload);
+      // console.log('Running authLogin with payload: ', action.payload);
       // If the user we just loaded has a currentChat to show onscreen, then pull that chat from localStorage.
       if (chatId) {
-        console.log('Searching localStorage for a chat with ID: ', chatId);
+        // console.log('Searching localStorage for a chat with ID: ', chatId);
         const savedChat = loadState(chatId, action.payload.keepTime || 0);
         if (savedChat) {
-          console.log('Saved chat loaded in the auth state: ', savedChat);
+          // console.log('Saved chat loaded in the auth state: ', savedChat);
           state.currentChat = savedChat;
         }
       }
@@ -48,18 +48,20 @@ export const authSlice = createSlice({
       state.currentUser.contacts = newContactList;
     },
     authAddChat: (state, action) => {
-      const {currentUserId, contactId, chatId} = action.payload;
+      const { currentUserId, contactId, chatId } = action.payload;
       state.currentUser.chats.push(chatId);
       // This will rerender the screen to show the new chat that was just created.
       state.currentUser.currentChat = chatId;
       state.currentChat = {
         userList: [currentUserId, contactId],
-        bubbleList: []
+        bubbleList: [],
       };
     },
     authDeleteChat: (state, action) => {
-      state.currentUser.chats = state.currentUser.chats.filter(chatId => chatId !== action.payload);
-      
+      state.currentUser.chats = state.currentUser.chats.filter(
+        (chatId) => chatId !== action.payload
+      );
+
       // TODO: This doesn't seem right. We may not be deleting the current chat
       // but this will always remove the current chat. Oops.
       state.currentUser.currentChat = '';
@@ -110,7 +112,7 @@ export const {
   authUpdateUserImage,
   authUpdateSearchable,
   chatInitialiseMessages,
-  chatAddMessage
+  chatAddMessage,
 } = authSlice.actions;
 
 export default authSlice.reducer;

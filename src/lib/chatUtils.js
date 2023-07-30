@@ -4,6 +4,7 @@ import {
   chatInitialiseMessages,
 } from '../redux/authSlice';
 import { reduxAddChat } from '../redux/chatsSlice';
+import { reduxRemoveContact } from '../redux/contactsSlice';
 import {
   addChat,
   deleteContact,
@@ -15,6 +16,7 @@ import { loadState } from './localStorage';
 export const deleteContactFromList = async (authState, contact, dispatch) => {
   // First check if the contact you're deleting is the one you're currently chatting with.
   let isCurrentChat = false;
+  console.log('Deleting contact from chatUtils:', contact);
   const chatData = await fetchChatById(
     authState.currentUser._id,
     authState.currentUser.currentChat
@@ -31,6 +33,9 @@ export const deleteContactFromList = async (authState, contact, dispatch) => {
   if (isCurrentChat) {
     dispatch(authUpdateCurrentChat(''));
   }
+
+  // Remove the contact from the contact state slice:
+  dispatch(reduxRemoveContact(contact));
 };
 
 export const loadExistingChat = async (
@@ -75,12 +80,12 @@ export const createNewChat = async (currentUserId, contact, dispatch) => {
   dispatch(chatInitialiseMessages(newChat));
 
   // Now the problem is that the redux chatSlice needs different info to the authSlice
-  // Authslice uses the actual chat message info:
+  // AuthSlice uses the actual chat message info:
   // { userList: [],
   //   bubbleList: []
   // }
-  // Chatslice requires user info to display in the sidebar:
-  // { _id: '', userList: [{ 
+  // ChatsSlice requires user info to display in the sidebar:
+  // { _id: '', userList: [{
   //   _id: '',
   //   firstName: '',
   //   lastName: '',

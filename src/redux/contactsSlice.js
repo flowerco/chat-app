@@ -1,31 +1,31 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { isEqual, remove } from 'lodash';
-import { fetchContacts } from "../lib/api";
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { fetchContacts } from '../lib/api';
 
 const initialState = {
   contacts: [],
-  status:'idle',
-  error: null
-}
+  status: 'idle',
+  error: null,
+};
 
 export const contactsSlice = createSlice({
   name: 'contacts',
   initialState,
   reducers: {
-    loadContacts: (state, action) => {
-      const contactList = action.payload;
-      state.contacts = contactList;
-    },
-    addContact: (state, action) => {
+    reduxAddContact: (state, action) => {
       const newContact = action.payload;
-      state.push(newContact);
+      console.log('New contact to add to the state:', newContact);
+      state.contacts.push(newContact);
     },
-    removeContact: (state, action) => {
+    reduxRemoveContact: (state, action) => {
       const contactToDelete = action.payload;
-      state = remove(state, isEqual(contactToDelete));
-    }
-  }, 
-  // The following extra reducers allow the state to be set depending on the 
+      console.log('Contact to delete from the state:', contactToDelete);
+      const newState = state.contacts.filter(
+        (contact) => contact._id !== contactToDelete._id
+      );
+      state.contacts = newState;
+    },
+  },
+  // The following extra reducers allow the state to be set depending on the
   // current status of the thunk as it runs asynchronously.
   extraReducers(builder) {
     builder
@@ -39,24 +39,24 @@ export const contactsSlice = createSlice({
       .addCase(reduxFetchContacts.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
-      })
-  }
+      });
+  },
 });
 
-export const {
-  loadContacts,
-  addContact,
-  removeContact
-} = contactsSlice.actions;
+export const { loadContacts, reduxAddContact, reduxRemoveContact } =
+  contactsSlice.actions;
 
 export default contactsSlice.reducer;
 
 // Asynchronous thunk to fetch the initial contacts data from the db.
 // Note: we don't use a try/catch here since the error handling is done in the extra reducers.
 
-export const reduxFetchContacts = createAsyncThunk('contacts/loadContacts', async (userId) => {
-  console.log('Redux fetching contacts for user: ', userId);
-  const response = await fetchContacts(userId);
-  console.log('Contacts found: ', response);
-  return response;
-});
+export const reduxFetchContacts = createAsyncThunk(
+  'contacts/loadContacts',
+  async (userId) => {
+    console.log('Redux fetching contacts for user: ', userId);
+    const response = await fetchContacts(userId);
+    console.log('Contacts found: ', response);
+    return response;
+  }
+);

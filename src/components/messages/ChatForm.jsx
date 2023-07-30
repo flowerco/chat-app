@@ -48,6 +48,7 @@ export default function ChatForm({ userId, chatId }) {
 
   return (
     <form
+      data-testid='message-input'
       className='fixed bottom-0 left-0 w-full h-20
       flex justify-center items-center sm:items-end pb-0 sm:pb-4 pl-16 sm:pl-28 sm:pr-12'
       onSubmit={handleSubmit}

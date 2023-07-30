@@ -11,6 +11,19 @@ export default configureStore({
     screen: screenReducer,
     socket: socketReducer,
     contacts: contactsReducer,
-    chats: chatsReducer
+    chats: chatsReducer,
   },
 });
+
+export const setupStore = (preloadedState) => {
+  return configureStore({
+    reducer: {
+      auth: authReducer,
+      screen: screenReducer,
+      socket: socketReducer,
+      contacts: contactsReducer,
+      chats: chatsReducer,
+    },
+    preloadedState,
+  });
+};
