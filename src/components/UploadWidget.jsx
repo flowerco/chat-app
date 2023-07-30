@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MdEdit } from 'react-icons/md';
 import { authUpdateUserImage } from '../redux/authSlice';
-import { updateCurrentUserImage, updateCurrentUserProperty } from '../lib/api';
+import { updateCurrentUserProperty } from '../lib/api';
 
 export default function UploadWidget() {
   const cloudinaryRef = useRef();
@@ -76,6 +76,7 @@ export default function UploadWidget() {
           }
         )
       : undefined;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigator.onLine]);
 
   return (

@@ -4,10 +4,11 @@ import ChatBubble from './ChatBubble';
 import { saveState } from '../../lib/localStorage';
 
 function BubbleList() {
-
   const messagesEndRef = useRef(null);
-  const currentChatId = useSelector(state => state.auth.currentUser.currentChat)
-  const chatState = useSelector(state => state.auth.currentChat);
+  const currentChatId = useSelector(
+    (state) => state.auth.currentUser.currentChat
+  );
+  const chatState = useSelector((state) => state.auth.currentChat);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -17,16 +18,15 @@ function BubbleList() {
     scrollToBottom();
   }, [chatState.bubbleList]);
 
-
   // Might be overkill to avoid one save of the state to localStorage, but we don't want to save on
   // the first render since this is immediately after the load and there will be no changes to save.
 
   // Custom hook to compare the current value of state/props to the previous value
-  function useCompare (val) {
-    let prevVal = usePrevious(val)
+  function useCompare(val) {
+    let prevVal = usePrevious(val);
     return prevVal !== val;
   }
-  
+
   // Helper hook
   function usePrevious(value) {
     const ref = useRef();
@@ -40,16 +40,15 @@ function BubbleList() {
 
   useEffect(() => {
     if (hasChatIdChanged) {
-      console.log('Chat ID updated, so a new chat loaded, so don\'t save the state');
+      // console.log('Chat ID updated, so a new chat loaded, so don\'t save the state');
       return;
     }
-    console.log('Saving chat state in my new fancy useEffect');
+    // console.log('Saving chat state in my new fancy useEffect');
     saveState(currentChatId, chatState);
   }, [hasChatIdChanged, currentChatId, chatState]);
 
-
   return (
-    <div className='w-full h-full max-w-5xl mb-24 pt-4 px-4 overflow-y-scroll'>
+    <div className='w-full h-full max-w-5xl mb-20 sm:mb-24 pt-4 px-4 overflow-y-scroll'>
       <div className='w-full h-full flex flex-col gap-2'>
         {chatState.bubbleList.length > 0
           ? chatState.bubbleList.map((chat, index) => (

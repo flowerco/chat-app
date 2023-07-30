@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BsPlusCircle } from 'react-icons/bs';
-import { fetchContacts, fetchChats } from '../../lib/api';
 import Settings from './Settings';
 import SidebarList from './SidebarList';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,8 +11,8 @@ const sidebarTypes = {
     topNavText: 'Somethings gone wrong if you can see me...',
   },
   CHATS: {
-    bgColor: 'bg-secondary',
-    textColor: 'text-white',
+    bgColor: 'bg-teal-500',
+    textColor: 'text-black',
     topNavText: 'New Chat',
   },
   CONTACTS: {
@@ -21,65 +20,25 @@ const sidebarTypes = {
     topNavText: 'Add Contact',
   },
   SETTINGS: {
-    bgColor: 'bg-blue-500',
+    bgColor: 'bg-blue-700',
+    textColor: 'text-white',
     topNavText: '',
   },
 };
 
 export default function Sidebar({ number }) {
-
-  const screenState = useSelector(state => state.screen);
+  const screenState = useSelector((state) => state.screen);
+  const authState = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
+  // Identify the type of sidebar to display based on the number in the screen state.
   const showSidebar = screenState.sidebarState === number;
   const typeName = screenState.sidebarType[number - 1];
   const type = sidebarTypes[typeName];
 
-  const authState = useSelector(state => state.auth);
 
-  // Use a single generic list rather than defining both contact/chat lists.
-  const [userList, setUserList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // The screenstate holds a list of contact or chat IDs, but we need to pull the additional data for them here.
-  useEffect(() => {
-    const fetchData = async (typeName) => {
-      let listData = [];
-      if (typeName === 'CONTACTS') {
-        listData = await fetchContacts(authState.currentUser._id);
-        // We need a unique key field to populate the list correctly,
-        // but it will be different for contacts and chats:
-        listData = listData.map((contact) => ({
-          ...contact,
-          unqKey: contact._id,
-        }));
-      } else if (typeName === 'CHATS') {
-        const chatList = await fetchChats(authState.currentUser._id);
-        // Chats include an ID and a userList, so combine the userLists and filter based on ID
-        const listSet = chatList.reduce((agg, chat) => {
-          const newUsers = chat.userList;
-          newUsers.forEach((user) => {
-            user.unqKey = chat._id;
-            if (!agg.includes(user._id)) {
-              agg.push(user);
-            }
-          });
-          return agg;
-        }, []);
-
-        listData = Array.from(listSet);
-      }
-
-      return listData;
-    };
-
-    // If the user has been loaded into the auth state, then we are safe to call the fetch method for that user.
-    if (authState.currentUser._id) {
-      fetchData(typeName).then((data) => {
-        // console.log('Data returned: ', data);
-        setUserList(data);
-      });
-    }
-  }, [authState.currentUser, typeName]);
 
   const handleAddClick = (event) => {
     dispatch(openModal(typeName));
@@ -87,7 +46,7 @@ export default function Sidebar({ number }) {
 
   return (
     <div
-      className={`z-20 w-80 h-full fixed top-0 left-16
+      className={`z-20 w-[calc(100%-4rem)] sm:w-80 h-full fixed top-0 left-16
     flex flex-col justify-center items-center
     transition-transform duration-200 ease-linear
     ${type.bgColor} ${type.textColor}
@@ -103,7 +62,7 @@ export default function Sidebar({ number }) {
         {typeName === 'SETTINGS' ? (
           <Settings user={authState.currentUser} />
         ) : (
-          <SidebarList userList={userList} typeName={typeName} />
+          <SidebarList loading={isLoading} typeName={typeName} />
         )}
       </div>
     </div>
@@ -113,8 +72,8 @@ export default function Sidebar({ number }) {
 const SidebarTopNav = ({ topNavText, clickCallback }) => {
   return (
     <div className='w-full h-[80px] flex justify-end items-center bg-gray-900'>
-      <span className='text-green-500 text-xl pr-4'>{topNavText}</span>
-      <button onClick={clickCallback} className='text-green-500 pr-8'>
+      <span className='text-accent text-xl pr-4'>{topNavText}</span>
+      <button onClick={clickCallback} className='text-accent pr-8'>
         <BsPlusCircle size='32' />
       </button>
     </div>

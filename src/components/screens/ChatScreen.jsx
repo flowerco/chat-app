@@ -7,7 +7,6 @@ import { capitaliseFirstLetter } from '../../lib/utils';
 import { useSelector } from 'react-redux';
 import { fetchChatById } from '../../lib/api';
 import { socket } from '../../lib/socket';
-import ClipLoader from 'react-spinners/ClipLoader';
 
 
 export default function ChatScreen() {
@@ -50,7 +49,7 @@ export default function ChatScreen() {
 
 
   return (
-    <div className='w-full h-full ml-16 flex flex-col justify-center items-center bg-teal-500'>
+    <div className='w-full h-full ml-16 flex flex-col justify-center items-center bg-secondary'>
       <TitleBar contact={contact} />
       <MemoisedBubbleList />
       <ChatForm userId={authState.currentUser._id} chatId={chatId} />
@@ -64,8 +63,8 @@ function TitleBar ({ contact }) {
   const authState = useSelector(state => state.auth);
 
   return (
-    <div className='w-full h-40 sm:h-20 flex flex-col sm:flex-row justify-between items-center sm:px-4 bg-primary text-white'>
-    <div className='flex flex-col'>
+    <div className='w-full h-20 flex flex-col sm:flex-row justify-between items-center sm:px-4 bg-primary text-white'>
+    <div className='hidden sm:flex flex-col'>
       <p className='h-20 flex justify-center items-center'>
         <span className='text-yellow-400 font-semibold text-4xl mr-4'>
           Freechat

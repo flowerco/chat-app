@@ -13,37 +13,44 @@ function hasDaysPassed(dateString, numberOfDays) {
   return daysPassed >= numberOfDays;
 }
 
-
-export const loadState = ( chatId, keepDays ) => {
+export const loadState = (chatId, keepDays) => {
   try {
     const encryptedState = localStorage.getItem(chatId);
-    console.log('Encrypted message list found: ', encryptedState);
+    // console.log('Encrypted message list found: ', encryptedState);
     if (encryptedState === null) {
       return undefined;
     }
-    const decryptedState = AES.decrypt(encryptedState, process.env.REACT_APP_MESSAGE_ENCRYPTION_KEY).toString(enc.Utf8);
+    const decryptedState = AES.decrypt(
+      encryptedState,
+      process.env.REACT_APP_MESSAGE_ENCRYPTION_KEY
+    ).toString(enc.Utf8);
     const messageState = JSON.parse(decryptedState);
-    
+
     // Apply a filter to remove any old messages.
     console.log('Keep days: ', keepDays);
-    messageState.bubbleList = messageState.bubbleList.filter(bubble => !hasDaysPassed(bubble.timeStamp, keepDays))
+    messageState.bubbleList = messageState.bubbleList.filter(
+      (bubble) => !hasDaysPassed(bubble.timeStamp, keepDays)
+    );
     console.log('Messages returned: ', messageState);
     return messageState;
   } catch {
     // The fallback is always to return undefined and let the Redux reducer load the state.
-    return undefined
+    return undefined;
   }
-}
+};
 
 export const saveState = (chatId, state) => {
   try {
     // When we receive the state, update the localStorage item for that chat.
-    const encryptedState = AES.encrypt(JSON.stringify(state), process.env.REACT_APP_MESSAGE_ENCRYPTION_KEY).toString();
+    const encryptedState = AES.encrypt(
+      JSON.stringify(state),
+      process.env.REACT_APP_MESSAGE_ENCRYPTION_KEY
+    ).toString();
     localStorage.setItem(chatId, encryptedState);
   } catch (err) {
     // Ignore write errors
   }
-}
+};
 
 export const deleteState = (chatId) => {
   try {
@@ -51,4 +58,4 @@ export const deleteState = (chatId) => {
   } catch (err) {
     console.log('Failed to delete chat');
   }
-}
+};

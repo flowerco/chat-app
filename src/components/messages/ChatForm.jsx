@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { socket } from '../../lib/socket';
-import ClipLoader from 'react-spinners/ClipLoader';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { chatAddMessage } from '../../redux/authSlice';
-import { saveState } from '../../lib/localStorage';
 
 export default function ChatForm({ userId, chatId }) {
   const [formState, setFormState] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
 
-  const authState = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   const handleChange = (event) => {
@@ -24,20 +21,6 @@ export default function ChatForm({ userId, chatId }) {
   };
 
   const updateChatState = (message) => {
-    // 3. Save the new state to eg. localStorage, ideally with some encryption...
-    // Should this be in a callback from the dispatch? Ideally would just use the new state instead of redefining
-    // the state here to save it...
-    // saveState(chatId, {
-    //   userList: authState.currentChat.userList,
-    //   bubbleList: [
-    //     ...authState.currentChat.bubbleList,
-    //     {
-    //       _id: userId,
-    //       timeStamp: new Date(Date.now()).toISOString(),
-    //       text: message,
-    //     },
-    //   ],
-    // });
     // 1. Update the state as it appears on the screen.
     dispatch(chatAddMessage({ senderId: userId, message }));
     // 2. Send to the contact via websocket, ideally with some encryption...
@@ -65,24 +48,25 @@ export default function ChatForm({ userId, chatId }) {
 
   return (
     <form
-      className='fixed bottom-0 left-0 w-full h-24
-      flex justify-center items-end pb-4 pl-16 sm:pl-28 sm:pr-12'
+      data-testid='message-input'
+      className='fixed bottom-0 left-0 w-full h-20
+      flex justify-center items-center sm:items-end pb-0 sm:pb-4 pl-16 sm:pl-28 sm:pr-12'
       onSubmit={handleSubmit}
     >
       <textarea
-        className='h-16 w-2/3 rounded-md px-6 py-2  mr-4 text-lg'
+        className='h-16 w-2/3 rounded-md px-2 sm:px-6 py-2 mr-2 sm:mr-4 text-md sm:text-lg'
         autoFocus
         type='textarea'
         value={formState}
         name='message'
         onKeyDown={onEnterPress}
         onChange={handleChange}
-        placeholder='Enter Message Here...'
+        placeholder='New message...'
       />
       <button
         type='submit'
         disabled={isLoading}
-        className='bg-blue-500 h-8 w-1/4 max-w-[8rem] rounded-md font-semibold text-lg text-white'
+        className='bg-accent text-primary h-16 sm:h-8 aspect-square sm:aspect-auto sm:w-1/4 max-w-[8rem] rounded-full sm:rounded-md font-semibold text-md sm:text-lg'
       >
         Send
       </button>
