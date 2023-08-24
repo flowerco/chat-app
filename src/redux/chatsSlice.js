@@ -43,7 +43,7 @@ export const chatsSlice = createSlice({
       })
       .addCase(reduxFetchChats.fulfilled, (state, action) => {
         state.status = 'success';
-        state.chats = state.chats.concat(action.payload);
+        state.chats = action.payload;
       })
       .addCase(reduxFetchChats.rejected, (state, action) => {
         state.status = 'failed';

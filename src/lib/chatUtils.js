@@ -57,7 +57,7 @@ export const loadExistingChat = async (
   // Pull the selected chat from localstorage, and create it if it doesn't exist.
   const persistedChatState = loadState(chatId, authState.currentUser.keepTime);
 
-  console.log('Chat state pulled from local storage: ', persistedChatState);
+  // console.log('Chat state pulled from local storage: ', persistedChatState);
 
   const finalChatState = persistedChatState || {
     userList: [authState.currentUser._id, contact._id],
@@ -94,6 +94,6 @@ export const createNewChat = async (currentUserId, contact, dispatch) => {
   // TODO: In retrospect, this is silly. Chatslice should have the actual chat content
   // chats and contacts should be properties of the currentUser in the authSlice.
   const chatToAdd = { _id: newChatId, userList: [contact] };
-  console.log('Created new chat to add to redux: ', chatToAdd);
+  // console.log('Created new chat to add to redux: ', chatToAdd);
   dispatch(reduxAddChat(chatToAdd));
 };

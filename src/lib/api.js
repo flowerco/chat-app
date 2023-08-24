@@ -8,7 +8,7 @@ const rootUrl = process.env.REACT_APP_HOSTNAME
 export const fetcher = async ({ url, method, body, json = true }) => {
   const cookieFlag = !['/register', '/login'].includes(url);
 
-  console.log(`Sending fetch request to ${url} with cookie flag ${cookieFlag}`);
+  // console.log(`Sending fetch request to ${url} with cookie flag ${cookieFlag}`);
 
   const res = await fetch(url, {
     method,
@@ -34,7 +34,7 @@ export const fetcher = async ({ url, method, body, json = true }) => {
 
   if (json) {
     const data = await res.json();
-    console.log('Data returned from fetch request: ', data);
+    // console.log('Data returned from fetch request: ', data);
     return data;
   }
 };

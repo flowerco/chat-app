@@ -17,7 +17,7 @@ export default function ChatList({ searchString }) {
   const dispatch = useDispatch();
 
   const chatsList = chatState.chats.filter((chat) => {
-    // TODO: Allow for multiple contacts in the chat, not just the first user in the list. 
+    // TODO: Allow for multiple contacts in the chat, not just the first user in the list.
     const contact = chat.userList[0];
     return searchString
       ? [contact.firstName, contact.lastName]
@@ -31,7 +31,8 @@ export default function ChatList({ searchString }) {
     // Either go to join the selected chat or delete the chat, depending on the edit mode.
     if (screenState.editMode) {
       // Check if we're currently showing the chat we're about to delete.
-      let isCurrentChat = authState.currentUser.currentChat.toString() === chat._id;
+      let isCurrentChat =
+        authState.currentUser.currentChat.toString() === chat._id;
 
       const updateChatList = async () => {
         // SO MANY STEPS to delete a chat... here goes:
@@ -39,7 +40,7 @@ export default function ChatList({ searchString }) {
         await deleteChat(authState.currentUser._id, chat._id);
         // 2. Remove the chat from the currentChat state in redux
         dispatch(authDeleteChat(chat._id));
-        // 3. Remove the chat from the list of all chats in redux 
+        // 3. Remove the chat from the list of all chats in redux
         dispatch(reduxRemoveChat(chat._id));
         // 4. Remove the chat saved in localStorage
         deleteState(chat._id);
@@ -52,7 +53,7 @@ export default function ChatList({ searchString }) {
       };
       await updateChatList();
     } else {
-      // Load the chat from localStorage. 
+      // Load the chat from localStorage.
       // If the chat exists in the DB but there's nothing in localStorage it will
       // default to an empty chat.
       await loadExistingChat(authState, chat._id, chat.userList[0], dispatch);
@@ -61,17 +62,19 @@ export default function ChatList({ searchString }) {
   };
 
   return (
-    <ul className='w-full h-full overflow-scroll flex flex-col justify-start items-center px-6 gap-2'>
-      {chatsList.length > 0 ? (chatsList.map((chat) => {
-        return (
-          <ChatItem
-            key={chat._id}
-            contact={chat.userList[0]}
-            edit={screenState.editMode}
-            callback={(event) => handleClick(event, chat)}
-          />
-        );
-      })):(
+    <ul className='w-full h-full overflow-scroll flex flex-col justify-start items-center px-6 gap-2 mb-2'>
+      {chatsList.length > 0 ? (
+        chatsList.map((chat) => {
+          return (
+            <ChatItem
+              key={chat._id}
+              contact={chat.userList[0]}
+              edit={screenState.editMode}
+              callback={(event) => handleClick(event, chat)}
+            />
+          );
+        })
+      ) : (
         <p className='text-center'>No chats here yet, let's add some!</p>
       )}
     </ul>
@@ -84,7 +87,7 @@ const ChatItem = ({ contact, chatId, edit, callback }) => {
   // type contact, which has a 'chat' button to start/resume a chat.
 
   return (
-    <li className='w-full h-12 flex justify-between items-center bg-grey-200 '>
+    <li className='w-full h-12 flex justify-between items-center bg-grey-200'>
       <img
         className='h-full aspect-square object-cover rounded-full'
         src={contact.userImg || BlankProfile}

@@ -34,13 +34,13 @@ export default function ContactsList({ searchString }) {
     } else {
       // Edit mode off, so go to the selected chat.
       // First check if there is already a chat for that contact
-      console.log('Check to see if chat exists');
+      // console.log('Check to see if chat exists');
       let chatId = await fetchChatForContact(
         authState.currentUser._id,
         contact._id
       );
 
-      console.log('Chat ID returned for contact: ', chatId);
+      // console.log('Chat ID returned for contact: ', chatId);
 
       // ERROR!!! TODO: the function above creates a new chat if one doesn't exist!!!
       // So there is always one found and we try to pull it from localStorage and
@@ -50,10 +50,10 @@ export default function ContactsList({ searchString }) {
       // 1) get the ID if it exists or
       // 2) create a chat if one doesn't exist.
       if (chatId) {
-        console.log('It exists already, load it from local storage');
+        // console.log('It exists already, load it from local storage');
         loadExistingChat(authState, chatId, contact, dispatch);
       } else {
-        console.log("It doesn't exist, create a new chat");
+        // console.log("It doesn't exist, create a new chat");
         createNewChat(authState.currentUser._id, contact, dispatch);
       }
 
@@ -62,7 +62,7 @@ export default function ContactsList({ searchString }) {
   };
 
   return (
-    <ul className='w-full h-full overflow-scroll flex flex-col justify-start items-center px-6 gap-2'>
+    <ul className='w-full h-full overflow-scroll flex flex-col justify-start items-center px-6 gap-2 mb-2'>
       {contactsList.length > 0 ? (
         contactsList.map((contact) => {
           return (
@@ -83,13 +83,20 @@ export default function ContactsList({ searchString }) {
 
 const ContactItem = ({ contact, edit, callback }) => {
   return (
-    <li className='w-full h-12 flex justify-between items-center bg-grey-200 '>
-      <img
-        className='h-full aspect-square object-cover rounded-full'
-        src={contact.userImg || BlankProfile}
-        alt={`Contact ${contact.firstName}`}
-        onError={(event) => (event.target.src = BlankProfile)}
-      />
+    <li className='w-full h-12 flex justify-between items-center bg-grey-200'>
+      <div className='h-full aspect-square relative'>
+        <img
+          className='object-cover rounded-full'
+          src={contact.userImg || BlankProfile}
+          alt={`Contact ${contact.firstName}`}
+          onError={(event) => (event.target.src = BlankProfile)}
+        />
+        <div
+          className={`${
+            contact.online ? 'bg-green-500' : 'bg-red-500'
+          } border border-gray-400 h-4 w-4 absolute rounded-full -bottom-2 right-0`}
+        />
+      </div>
       <h2 className='h-full w-full ml-4 flex items-center text-xl border-b border-gray-400'>
         {capitaliseFirstLetter(contact.firstName)}{' '}
         {capitaliseFirstLetter(contact.lastName)}

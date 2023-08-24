@@ -23,7 +23,9 @@ export default function ChatForm({ userId, chatId }) {
   const updateChatState = (message) => {
     // 1. Update the state as it appears on the screen.
     dispatch(chatAddMessage({ senderId: userId, message }));
-    // 2. Send to the contact via websocket, ideally with some encryption...
+    // 2. Send to the contact via websocket
+    // TODO: can we encrypt the message?
+    // TODO: add a callback as a last argument to acknowledge receipt
     socket.emit('send-message', chatId, userId, message);
   };
 

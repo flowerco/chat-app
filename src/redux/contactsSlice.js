@@ -24,6 +24,20 @@ export const contactsSlice = createSlice({
       );
       state.contacts = newState;
     },
+    updateContactOnlineStatus: (state, action) => {
+      console.log('Payload received: ', action.payload);
+      const contactToUpdate = action.payload.userId;
+      const onlineStatus = action.payload.online;
+      console.log('Action received: ', contactToUpdate, onlineStatus);
+      // TODO: the contact to update could be more easily accessed if it were stored as:
+      // {'contactId': {name: 'jim', img: '.../.jpg'}}
+      // Currently order n is proportional to length of contact list.
+      for (let i = 0; i < state.contacts.length; i++) {
+        if (state.contacts[i]._id === contactToUpdate) {
+          state.contacts[i].online = onlineStatus;
+        }
+      }
+    },
   },
   // The following extra reducers allow the state to be set depending on the
   // current status of the thunk as it runs asynchronously.
@@ -34,7 +48,7 @@ export const contactsSlice = createSlice({
       })
       .addCase(reduxFetchContacts.fulfilled, (state, action) => {
         state.status = 'success';
-        state.contacts = state.contacts.concat(action.payload);
+        state.contacts = action.payload;
       })
       .addCase(reduxFetchContacts.rejected, (state, action) => {
         state.status = 'failed';
@@ -43,8 +57,12 @@ export const contactsSlice = createSlice({
   },
 });
 
-export const { loadContacts, reduxAddContact, reduxRemoveContact } =
-  contactsSlice.actions;
+export const {
+  loadContacts,
+  reduxAddContact,
+  reduxRemoveContact,
+  updateContactOnlineStatus,
+} = contactsSlice.actions;
 
 export default contactsSlice.reducer;
 
@@ -54,9 +72,9 @@ export default contactsSlice.reducer;
 export const reduxFetchContacts = createAsyncThunk(
   'contacts/loadContacts',
   async (userId) => {
-    console.log('Redux fetching contacts for user: ', userId);
+    // console.log('Redux fetching contacts for user: ', userId);
     const response = await fetchContacts(userId);
-    console.log('Contacts found: ', response);
+    // console.log('Contacts found: ', response);
     return response;
   }
 );

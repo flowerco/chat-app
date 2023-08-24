@@ -43,7 +43,7 @@ export default function SidebarList({ loading, typeName }) {
         </div>
       )}
       {!loading && (
-        <div className='flex justify-end p-4'>
+        <div className='flex justify-end pt-2 pb-4 px-4'>
           {
             // TODO: Need to hide the edit button when there are no chats/contacts,
             // but that will require access to both states...

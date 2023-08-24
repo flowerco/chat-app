@@ -7,11 +7,20 @@ import { useEffect } from 'react';
 import { socket } from '../../lib/socket';
 
 export default function MainScreen() {
+  const authState = useSelector((state) => state.auth);
   const screenState = useSelector((state) => state.screen);
 
   useEffect(() => {
+    // TODO: After connecting here we need to emit a get-users so that we get added to the
+    // list of online users. Could possibly send the userId in the connect() function,
+    // but not sure if it's designed to work that way...
+    // socket.connect({ query: `id=${authState.currentUser._id}` });
     socket.connect();
-    return () => socket.disconnect();
+    socket.emit('user-online', authState.currentUser._id);
+    return () => {
+      socket.emit('user-offline', authState.currentUser._id);
+      socket.disconnect();
+    };
     // We don't want to reconnect every time the socket updates. Remove the dependency to only run once.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
