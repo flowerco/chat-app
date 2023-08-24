@@ -9,6 +9,10 @@ import { fetchChatById } from '../../lib/api';
 import { socket } from '../../lib/socket';
 
 export default function ChatScreen() {
+  // TODO: This contact needs to have their online status updated after a socket.io event.
+  // So either we make the state part of redux, or we add a new listener to the 'online-user'
+  // event within this component.
+  // Redux is complicated enough for now. Let's listen for the event here.
   const [contact, setContact] = useState({
     firstName: '',
     lastName: '',
@@ -20,14 +24,16 @@ export default function ChatScreen() {
   const chatId = authState.currentUser.currentChat;
 
   useEffect(() => {
-    // On first render we fetch the details of the other user(s) in this chat
-    // TODO: Shouldn't need to go to the DB any more, this should all sit in redux...
     const fetchContactData = async (chatId) => {
+      // To ensure this is scalable, we go back to the DB here. Eventually there may be
+      // too many chats/contacts to pull them all into memory at once, so the chat we're
+      // looking for might not be in the redux state.
       let chatData = await fetchChatById(authState.currentUser._id, chatId);
       let contact = null;
       if (chatData) {
         contact = chatData.userList[0];
       }
+      console.log('Contact for current chat: ', contact);
       return contact;
     };
 
@@ -38,6 +44,8 @@ export default function ChatScreen() {
       });
 
       // Connect to the chat via socket.io
+      // TODO: Remove this. Thechat connection status is no longer used, just online
+      // or offline.
       socket.emit('join-chat', chatId, authState.currentUser.firstName);
     } else {
       // console.log('No chat ID on this render...');
@@ -47,6 +55,30 @@ export default function ChatScreen() {
       socket.emit('leave-chat', chatId, authState.currentUser.firstName);
     };
   }, [authState.currentUser, chatId]);
+
+  useEffect(() => {
+    function setChatOnline(userId) {
+      // console.log('Setting current chat online.');
+      if (userId === contact._id.toString()) {
+        setContact({ ...contact, online: true });
+      }
+    }
+    function setChatOffline(userId) {
+      // console.log('Setting current chat offline.');
+      if (userId === contact._id.toString()) {
+        setContact({ ...contact, online: false });
+      }
+    }
+    socket.on('user-online', setChatOnline);
+    socket.on('user-offline', setChatOffline);
+    return () => {
+      socket.off('user-online', setChatOnline);
+      socket.off('user-offline', setChatOffline);
+    };
+    // Only want to set up listeners when the chat screen is first rendered.
+    // Changes to the specific contact should not update the listeners.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className='w-full h-full ml-16 flex flex-col justify-center items-center bg-secondary'>
@@ -58,7 +90,6 @@ export default function ChatScreen() {
 }
 
 function TitleBar({ contact }) {
-  const socketState = useSelector((state) => state.socket);
   const authState = useSelector((state) => state.auth);
 
   return (
