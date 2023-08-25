@@ -3,9 +3,9 @@ import { socket } from '../../lib/socket';
 import { useDispatch } from 'react-redux';
 import { chatAddMessage } from '../../redux/authSlice';
 
-export default function ChatForm({ userId, chatId }) {
+export default function ChatForm({ userId, chatId, online }) {
   const [formState, setFormState] = useState('');
-  const [isLoading] = useState(false);
+  // const [isLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -60,6 +60,7 @@ export default function ChatForm({ userId, chatId }) {
         autoFocus
         type='textarea'
         value={formState}
+        disabled={!online}
         name='message'
         onKeyDown={onEnterPress}
         onChange={handleChange}
@@ -67,8 +68,12 @@ export default function ChatForm({ userId, chatId }) {
       />
       <button
         type='submit'
-        disabled={isLoading}
-        className='bg-accent text-primary h-16 sm:h-8 aspect-square sm:aspect-auto sm:w-1/4 max-w-[8rem] rounded-full sm:rounded-md font-semibold text-md sm:text-lg'
+        disabled={!online}
+        className={`${
+          online ? 'bg-accent' : 'bg-gray-500'
+        } text-primary h-16 sm:h-8 
+        aspect-square sm:aspect-auto sm:w-1/4 max-w-[8rem] 
+        rounded-full sm:rounded-md font-semibold text-md sm:text-lg`}
       >
         Send
       </button>

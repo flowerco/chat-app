@@ -14,6 +14,7 @@ export default function ChatScreen() {
   // event within this component.
   // Redux is complicated enough for now. Let's listen for the event here.
   const [contact, setContact] = useState({
+    _id: '',
     firstName: '',
     lastName: '',
     userImg: '',
@@ -58,13 +59,13 @@ export default function ChatScreen() {
 
   useEffect(() => {
     function setChatOnline(userId) {
-      // console.log('Setting current chat online.');
+      console.log('Setting current chat online.');
       if (userId === contact._id.toString()) {
         setContact({ ...contact, online: true });
       }
     }
     function setChatOffline(userId) {
-      // console.log('Setting current chat offline.');
+      console.log('Setting current chat offline.');
       if (userId === contact._id.toString()) {
         setContact({ ...contact, online: false });
       }
@@ -78,13 +79,27 @@ export default function ChatScreen() {
     // Only want to set up listeners when the chat screen is first rendered.
     // Changes to the specific contact should not update the listeners.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [contact]);
 
+  // TODO: Make the explanation text responsive.
+  // One line if med width screen, two lines with additional div height for small screen.
   return (
-    <div className='w-full h-full ml-16 flex flex-col justify-center items-center bg-secondary'>
+    <div className='w-full h-full ml-16 flex flex-col justify-center items-center'>
       <TitleBar contact={contact} />
+      {!contact.online && (
+        <div className='h-16 sm:h-8 text-sm sm:text-base text-center flex justify-center items-center w-full border border-accent bg-opacity-60 bg-accent text-primary'>
+          <p>
+            This contact is currently offline. Messages cannot be sent until
+            they are online.
+          </p>
+        </div>
+      )}
       <MemoisedBubbleList />
-      <ChatForm userId={authState.currentUser._id} chatId={chatId} />
+      <ChatForm
+        userId={authState.currentUser._id}
+        chatId={chatId}
+        online={contact.online}
+      />
     </div>
   );
 }

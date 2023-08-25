@@ -22,7 +22,7 @@ export default function MainScreen() {
   }, []);
 
   return (
-    <div className='h-screen w-screen bg-secondary'>
+    <div className='h-screen w-screen bg-gray-400'>
       {screenState.modalState !== 'NONE' && (
         <Modal type={screenState.modalState} childForm={null} />
       )}

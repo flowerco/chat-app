@@ -1,0 +1,49 @@
+/* Right triangle, placed bottom right side slightly in */
+.tri-right.btm-right-in:after {
+  content: ' ';
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: auto;
+  right: 28px;
+  bottom: -19px;
+  border: 10px solid;
+  border-color: #c026d3 #c026d3 transparent transparent;
+}
+.tri-right.point-border.btm-right-in:before {
+  content: ' ';
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: auto;
+  right: 27px;
+  bottom: -21px;
+  border: 10px solid;
+  border-color: #64748b #64748b transparent transparent;
+}
+
+/* Right triangle, placed bottom right side slightly in */
+.tri-left.btm-left-in:after {
+  content: ' ';
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: 28px;
+  right: auto;
+  top: auto;
+  bottom: -19px;
+  border: 10px solid;
+  border-color: #ca8a04 transparent transparent #ca8a04;
+}
+.tri-left.point-border.btm-left-in:before {
+  content: ' ';
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: 27px;
+  right: auto;
+  top: auto;
+  bottom: -21px;
+  border: 10px solid;
+  border-color: #64748b transparent transparent #64748b;
+}
