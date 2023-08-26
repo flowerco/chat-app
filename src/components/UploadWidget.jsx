@@ -12,8 +12,6 @@ export default function UploadWidget() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log('Running the useEffect in the uploadWidget...');
-    // TODO: Check we are online here... trying to use the upload widget offline crashes everything!
     cloudinaryRef.current = window.cloudinary;
     widgetRef.current = navigator.onLine
       ? cloudinaryRef.current.createUploadWidget(
@@ -76,7 +74,7 @@ export default function UploadWidget() {
           }
         )
       : undefined;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigator.onLine]);
 
   return (
@@ -87,7 +85,9 @@ export default function UploadWidget() {
         if (navigator.onLine) {
           widgetRef.current.open();
         } else {
-          alert('Currently offline. Cannot upload a new photo.\nPlease go online to use this functionality.');
+          alert(
+            'Currently offline. Cannot upload a new photo.\nPlease go online to use this functionality.'
+          );
         }
       }}
       className='p-2 bg-emerald-400 text-white rounded-full group'

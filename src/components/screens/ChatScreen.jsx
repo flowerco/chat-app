@@ -9,10 +9,6 @@ import { fetchChatById } from '../../lib/api';
 import { socket } from '../../lib/socket';
 
 export default function ChatScreen() {
-  // TODO: This contact needs to have their online status updated after a socket.io event.
-  // So either we make the state part of redux, or we add a new listener to the 'online-user'
-  // event within this component.
-  // Redux is complicated enough for now. Let's listen for the event here.
   const [contact, setContact] = useState({
     _id: '',
     firstName: '',
@@ -34,7 +30,6 @@ export default function ChatScreen() {
       if (chatData) {
         contact = chatData.userList[0];
       }
-      console.log('Contact for current chat: ', contact);
       return contact;
     };
 

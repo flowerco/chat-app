@@ -13,22 +13,18 @@ export const contactsSlice = createSlice({
   reducers: {
     reduxAddContact: (state, action) => {
       const newContact = action.payload;
-      console.log('New contact to add to the state:', newContact);
       state.contacts.push(newContact);
     },
     reduxRemoveContact: (state, action) => {
       const contactToDelete = action.payload;
-      console.log('Contact to delete from the state:', contactToDelete);
       const newState = state.contacts.filter(
         (contact) => contact._id !== contactToDelete._id
       );
       state.contacts = newState;
     },
     updateContactOnlineStatus: (state, action) => {
-      console.log('Payload received: ', action.payload);
       const contactToUpdate = action.payload.userId;
       const onlineStatus = action.payload.online;
-      console.log('Action received: ', contactToUpdate, onlineStatus);
       // TODO: the contact to update could be more easily accessed if it were stored as:
       // {'contactId': {name: 'jim', img: '.../.jpg'}}
       // Currently order n is proportional to length of contact list.
@@ -72,9 +68,7 @@ export default contactsSlice.reducer;
 export const reduxFetchContacts = createAsyncThunk(
   'contacts/loadContacts',
   async (userId) => {
-    // console.log('Redux fetching contacts for user: ', userId);
     const response = await fetchContacts(userId);
-    // console.log('Contacts found: ', response);
     return response;
   }
 );

@@ -34,8 +34,8 @@ export default function ChatBubble({ chatItem }) {
       className={`relative max-w-5/6 border border-slate-500 rounded-md mb-4 px-4 py-2
     ${
       userId === chatItem._id
-        ? 'bg-fuchsia-600 self-end text-white'
-        : 'bg-yellow-600 self-start'
+        ? 'bg-teal-500 self-end text-white'
+        : 'bg-gray-300 self-start text-black'
     }`}
     >
       <div

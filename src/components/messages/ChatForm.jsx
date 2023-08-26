@@ -56,7 +56,8 @@ export default function ChatForm({ userId, chatId, online }) {
       onSubmit={handleSubmit}
     >
       <textarea
-        className='h-16 w-2/3 rounded-md px-2 sm:px-6 py-2 mr-2 sm:mr-4 text-md sm:text-lg'
+        className='h-16 w-2/3 max-w-5xl rounded-md px-2 sm:px-6 py-2 mr-2 sm:mr-4 
+        text-md sm:text-lg'
         autoFocus
         type='textarea'
         value={formState}
@@ -70,8 +71,8 @@ export default function ChatForm({ userId, chatId, online }) {
         type='submit'
         disabled={!online}
         className={`${
-          online ? 'bg-accent' : 'bg-gray-500'
-        } text-primary h-16 sm:h-8 
+          online ? 'bg-accent text-primary' : 'bg-gray-500 text-white'
+        } h-16 sm:h-10 border-slate-500 border
         aspect-square sm:aspect-auto sm:w-1/4 max-w-[8rem] 
         rounded-full sm:rounded-md font-semibold text-md sm:text-lg`}
       >

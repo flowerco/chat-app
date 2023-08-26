@@ -8,7 +8,7 @@
   right: 28px;
   bottom: -19px;
   border: 10px solid;
-  border-color: #c026d3 #c026d3 transparent transparent;
+  border-color: #14b8a6 #14b8a6 transparent transparent;
 }
 .tri-right.point-border.btm-right-in:before {
   content: ' ';
@@ -33,7 +33,7 @@
   top: auto;
   bottom: -19px;
   border: 10px solid;
-  border-color: #ca8a04 transparent transparent #ca8a04;
+  border-color: #d1d5db transparent transparent #d1d5db;
 }
 .tri-left.point-border.btm-left-in:before {
   content: ' ';

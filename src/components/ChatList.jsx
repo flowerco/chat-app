@@ -102,7 +102,6 @@ const ChatItem = ({ contact, chatId, edit, callback }) => {
         onClick={(event) => callback(event, contact, chatId)}
         className='text-black border-b border-gray-400 h-full'
       >
-        {/* TODO: Would a red circle with a white 'minus' sign be better here? */}
         {edit ? <MdDelete size='28' /> : <BsChatLeftDots size='24' />}
       </button>
     </li>
