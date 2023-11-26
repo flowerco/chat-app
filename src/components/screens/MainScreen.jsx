@@ -7,17 +7,22 @@ import { useEffect } from 'react';
 import { socket } from '../../lib/socket';
 
 export default function MainScreen() {
+  const authState = useSelector((state) => state.auth);
   const screenState = useSelector((state) => state.screen);
 
   useEffect(() => {
     socket.connect();
-    return () => socket.disconnect();
+    socket.emit('user-online', authState.currentUser._id);
+    return () => {
+      socket.emit('user-offline', authState.currentUser._id);
+      socket.disconnect();
+    };
     // We don't want to reconnect every time the socket updates. Remove the dependency to only run once.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div className='h-screen w-screen bg-secondary'>
+    <div className='h-screen w-screen bg-blue-200'>
       {screenState.modalState !== 'NONE' && (
         <Modal type={screenState.modalState} childForm={null} />
       )}

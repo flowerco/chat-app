@@ -3,9 +3,9 @@ import { socket } from '../../lib/socket';
 import { useDispatch } from 'react-redux';
 import { chatAddMessage } from '../../redux/authSlice';
 
-export default function ChatForm({ userId, chatId }) {
+export default function ChatForm({ userId, chatId, online }) {
   const [formState, setFormState] = useState('');
-  const [isLoading] = useState(false);
+  // const [isLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -23,7 +23,9 @@ export default function ChatForm({ userId, chatId }) {
   const updateChatState = (message) => {
     // 1. Update the state as it appears on the screen.
     dispatch(chatAddMessage({ senderId: userId, message }));
-    // 2. Send to the contact via websocket, ideally with some encryption...
+    // 2. Send to the contact via websocket
+    // TODO: can we encrypt the message?
+    // TODO: add a callback as a last argument to acknowledge receipt
     socket.emit('send-message', chatId, userId, message);
   };
 
@@ -54,10 +56,12 @@ export default function ChatForm({ userId, chatId }) {
       onSubmit={handleSubmit}
     >
       <textarea
-        className='h-16 w-2/3 rounded-md px-2 sm:px-6 py-2 mr-2 sm:mr-4 text-md sm:text-lg'
+        className='h-16 w-2/3 max-w-5xl rounded-md px-2 sm:px-6 py-2 mr-2 sm:mr-4 
+        text-md sm:text-lg'
         autoFocus
         type='textarea'
         value={formState}
+        disabled={!online}
         name='message'
         onKeyDown={onEnterPress}
         onChange={handleChange}
@@ -65,8 +69,12 @@ export default function ChatForm({ userId, chatId }) {
       />
       <button
         type='submit'
-        disabled={isLoading}
-        className='bg-accent text-primary h-16 sm:h-8 aspect-square sm:aspect-auto sm:w-1/4 max-w-[8rem] rounded-full sm:rounded-md font-semibold text-md sm:text-lg'
+        disabled={!online}
+        className={`${
+          online ? 'bg-accent text-primary' : 'bg-gray-500 text-white'
+        } h-16 sm:h-10 border-slate-500 border
+        aspect-square sm:aspect-auto sm:w-1/4 max-w-[8rem] 
+        rounded-full sm:rounded-md font-semibold text-md sm:text-lg`}
       >
         Send
       </button>

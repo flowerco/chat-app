@@ -27,11 +27,11 @@ export const loadState = (chatId, keepDays) => {
     const messageState = JSON.parse(decryptedState);
 
     // Apply a filter to remove any old messages.
-    console.log('Keep days: ', keepDays);
+    // console.log('Keep days: ', keepDays);
     messageState.bubbleList = messageState.bubbleList.filter(
       (bubble) => !hasDaysPassed(bubble.timeStamp, keepDays)
     );
-    console.log('Messages returned: ', messageState);
+    // console.log('Messages returned: ', messageState);
     return messageState;
   } catch {
     // The fallback is always to return undefined and let the Redux reducer load the state.
